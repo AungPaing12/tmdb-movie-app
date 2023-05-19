@@ -29,6 +29,7 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
 
         SliverAppBar(
+            automaticallyImplyLeading: false,
             floating: true,
             backgroundColor: kBlackColor,
             expandedHeight: kActorSliveAppBarHeight,
@@ -50,24 +51,24 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                     errorWidget: (context, url, error) =>
                     const Center(child: Icon(Icons.error)),
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left: 60,top: 40),
-                  //   child: Align(
-                  //     alignment:Alignment.topLeft ,
-                  //     child: GestureDetector(
-                  //       onTap:  () {
-                  //         Navigator.of(context).pop();
-                  //       },
-                  //       child: const CircleAvatar(
-                  //         radius: 20,
-                  //         backgroundColor: Colors.pinkAccent,
-                  //         child: Icon(
-                  //           Icons.arrow_back,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30,top: 40),
+                    child: Align(
+                      alignment:Alignment.topLeft ,
+                      child: GestureDetector(
+                        onTap:  () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const CircleAvatar(
+                          radius: 20,
+                          backgroundColor:kPinkAccentColor,
+                          child: Icon(
+                            Icons.arrow_back,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               )
 
@@ -192,12 +193,12 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: const [
-                      TextRatingVotesOnImages(imageURL: 'https://www.abystyle.com/3679429-large_default/demon-slayer-poster-entertainment-district-915x61cm.jpg', movieName: 'Demon Slayer', rating: '9.8', votes: '4390 votes',positionFillTop1: 140,),
-                      TextRatingVotesOnImages(imageURL: 'https://thecomicbookstore.in/wp-content/uploads/2022/09/TCBS2491.jpg', movieName: 'Attack On Titan', rating: '6.8', votes: '3290 votes',  positionFillTop1: 140,),
-                      TextRatingVotesOnImages(imageURL: 'https://ih1.redbubble.net/image.3304365345.6778/poster,504x498,f8f8f8-pad,600x600,f8f8f8.jpg', movieName: 'One Piece', rating: '8.5', votes: '41280 votes', positionFillTop1: 140,),
-                      TextRatingVotesOnImages(imageURL: 'https://m.media-amazon.com/images/I/71xz7wU39xL._AC_UF894,1000_QL80_.jpg',movieName: 'Bleach', rating: '7.8', votes: '7390 votes', positionFillTop1: 140,),
-                      TextRatingVotesOnImages(imageURL: 'https://pbs.twimg.com/media/FNLNGSSXEAE7-5_.jpg', movieName: 'Spy Family', rating: '9.5', votes: '68390 votes', positionFillTop1: 140,),
-                      TextRatingVotesOnImages(imageURL: 'https://resize.cdn.otakumode.com/ex/1200.1200/shop/product/24a2289b9fec4ecea7cf49b919a337c5.jpg', movieName: 'Susume No Tojimaru', rating: '8.7', votes: '6390 votes',positionFillTop1: 140,),
+                      TextRatingVotesOnImages(imageURL: 'https://www.abystyle.com/3679429-large_default/demon-slayer-poster-entertainment-district-915x61cm.jpg', movieName: 'Demon Slayer', rating: 12, votes:323,positionFillTop1: 140,),
+                      TextRatingVotesOnImages(imageURL: 'https://thecomicbookstore.in/wp-content/uploads/2022/09/TCBS2491.jpg', movieName: 'Attack On Titan', rating: 12, votes:323,  positionFillTop1: 140,),
+                      TextRatingVotesOnImages(imageURL: 'https://ih1.redbubble.net/image.3304365345.6778/poster,504x498,f8f8f8-pad,600x600,f8f8f8.jpg', movieName: 'One Piece',rating: 12, votes:323, positionFillTop1: 140,),
+                      TextRatingVotesOnImages(imageURL: 'https://m.media-amazon.com/images/I/71xz7wU39xL._AC_UF894,1000_QL80_.jpg',movieName: 'Bleach', rating: 12, votes:323, positionFillTop1: 140,),
+                      TextRatingVotesOnImages(imageURL: 'https://pbs.twimg.com/media/FNLNGSSXEAE7-5_.jpg', movieName: 'Spy Family', rating: 9.5, votes: 32434, positionFillTop1: 140,),
+                      TextRatingVotesOnImages(imageURL: 'https://resize.cdn.otakumode.com/ex/1200.1200/shop/product/24a2289b9fec4ecea7cf49b919a337c5.jpg', movieName: 'Susume No Tojimaru',rating: 12, votes:323,positionFillTop1: 140,),
 
                     ],
                   ),

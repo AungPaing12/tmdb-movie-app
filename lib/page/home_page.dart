@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/constant/dimens.dart';
-
+import 'package:movie_app/constant/colors.dart';
 import '../view_item/home_page_view_item.dart';
 
 class HomePage extends StatelessWidget {
@@ -8,26 +7,19 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
 
-      backgroundColor: Colors.black,
+      backgroundColor: kBlackColor,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-
         child: Column(
-          children: const [
-            SizedBox(
-              height: kSP30x,
-            ),
+          children: [
             SearchMovieBarAndSearchIconViewItem(),
-            MovieGenreScrollViewItem(),
-            SizedBox(
-              height: kSP20x,
-            ),
-            FirstScrollImgaeWithPlayButtomViewItem(),
-            SmallestMoviesScrollViewItem(),
-            YouMayLikeMovieViewItem(),
-            PopularMovieViewItem(),
+            MovieGenreViewItem(),
+            CarouselSliderViewItem(),
+            SmallestMovieViewItem(),
+            TopRatedMovieViewItem(),
+            PopularMoviesView(),
             ActorsViewItem(),
           ],
         ),

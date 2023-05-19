@@ -3,8 +3,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/constant/colors.dart';
 import 'package:movie_app/constant/dimens.dart';
-
 import 'actor_info_and_his_moives.dart';
+
 
 class Actors extends StatefulWidget {
   const Actors({super.key});

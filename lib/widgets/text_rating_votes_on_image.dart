@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/constant/colors.dart';
 import 'package:movie_app/widgets/easy_text.dart';
 
+import '../constant/api_constant.dart';
+
 class TextRatingVotesOnImages extends StatelessWidget {
   const TextRatingVotesOnImages({Key? key, required this.imageURL, required this.movieName,
     required this.rating, required this.votes,
     required this.positionFillTop1}) : super(key: key);
   final String imageURL;
   final String movieName;
-  final String rating;
-  final String votes;
+  final double rating;
+  final int votes;
   final double positionFillTop1;
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class TextRatingVotesOnImages extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: CachedNetworkImage(
-                imageUrl:
+                imageUrl:kPrefixEndPoint+
                 imageURL,
                 fit: BoxFit.cover,
                 width: double.infinity,
@@ -55,7 +57,9 @@ class TextRatingVotesOnImages extends StatelessWidget {
             Positioned(
                 left: 10,
                 bottom: 40,
-                child: EasyText(text: movieName,color: kWhiteColor,fontSize: 14,fontWeight: FontWeight.w900,)),
+                child: SizedBox(
+                    width: 150,
+                    child: EasyText(text: movieName,color: kWhiteColor,fontSize: 14,fontWeight: FontWeight.w900,))),
             Positioned(
               left: 10,
               bottom: 12,
@@ -65,11 +69,11 @@ class TextRatingVotesOnImages extends StatelessWidget {
                     Icons.star_border_purple500_outlined,color:kYellowAccentColor,
                     size: 15,
                   ),
-                  EasyText(text:rating,color: kYellowAccentColor,fontSize: 13,),
+                  EasyText(text: '$rating',color: kYellowAccentColor,fontSize: 13,),
                   const SizedBox(
                     width: 30,
                   ),
-                  EasyText(text: votes,color: kYellowAccentColor,fontSize: 13,)
+                  EasyText(text: '${votes}vote',color: kYellowAccentColor,fontSize: 13,),
                 ],
               ),
             ),

@@ -16,25 +16,25 @@ class AboutMovieAndRecommedMovie extends StatelessWidget {
     required this.storyLine, required this.movieName,
     required this.actorName, required this.crewName,
     required this.productionCompanyName,
-    required this.actorImgeURL,
-    required this.crewImgeURL,
-    required this.productionComapnyImgeURL,
+    required this.actorImageURL,
+    required this.crewImageURL,
+    required this.productionCompanyImageURL,
     required this.movieImageURL,
-    required this.textratingvoteonimgaes,
     required this.actorName1,
     required this.actorName2,
     required this.crewName1,
     required this.crewName2,
     required this.productionCompanyName1,
-    required this.actorImgeURL1,
-    required this.actorImgeURL2,
-    required this.crewImgeURL1,
-    required this.crewImgeURL2,
-    required this.productionComapnyImgeURL1,
-    required this.textratingvoteonimgaes1,
-    required this.textratingvoteonimgaes2,
-    required this.textratingvoteonimgaes3,
-    required this.textratingvoteonimgaes4})
+    required this.actorImageURL1,
+    required this.actorImageURL2,
+    required this.crewImageURL1,
+    required this.crewImageURL2,
+    required this.productionCompanyImageURL1,
+    required this.textRatingVotesOnImages,
+    required this.textRatingVotesOnImages1,
+    required this.textRatingVotesOnImages2,
+    required this.textRatingVotesOnImages3,
+    required this.textRatingVotesOnImages4})
       : super(key: key);
   final String storyLine;
 
@@ -47,20 +47,20 @@ class AboutMovieAndRecommedMovie extends StatelessWidget {
   final String crewName2;
   final String productionCompanyName;
   final String productionCompanyName1;
-  final TextRatingVotesOnImages textratingvoteonimgaes;
-  final TextRatingVotesOnImages textratingvoteonimgaes1;
-  final TextRatingVotesOnImages textratingvoteonimgaes2;
-  final TextRatingVotesOnImages textratingvoteonimgaes3;
-  final TextRatingVotesOnImages textratingvoteonimgaes4;
+  final TextRatingVotesOnImages textRatingVotesOnImages;
+  final TextRatingVotesOnImages textRatingVotesOnImages1;
+  final TextRatingVotesOnImages textRatingVotesOnImages2;
+  final TextRatingVotesOnImages textRatingVotesOnImages3;
+  final TextRatingVotesOnImages textRatingVotesOnImages4;
   final String movieImageURL;
-  final String actorImgeURL;
-  final String actorImgeURL1;
-  final String actorImgeURL2;
-  final String crewImgeURL;
-  final String crewImgeURL1;
-  final String crewImgeURL2;
-  final String productionComapnyImgeURL;
-  final String productionComapnyImgeURL1;
+  final String actorImageURL;
+  final String actorImageURL1;
+  final String actorImageURL2;
+  final String crewImageURL;
+  final String crewImageURL1;
+  final String crewImageURL2;
+  final String productionCompanyImageURL;
+  final String productionCompanyImageURL1;
 
 
   @override
@@ -71,6 +71,7 @@ class AboutMovieAndRecommedMovie extends StatelessWidget {
       NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled)=>[
           SliverAppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: kBlackColor,
             expandedHeight: kAboutMoviesSliverAppBarHeight,
             pinned: true,
@@ -79,18 +80,40 @@ class AboutMovieAndRecommedMovie extends StatelessWidget {
               title: EasyText( text: movieName,fontSize: kFontSize18x,fontWeight: FontWeight.w600,color: kWhiteColor),
 
               background:
-              CachedNetworkImage(
-                imageUrl:
-                movieImageURL,
-                fit: BoxFit.cover,
+              Stack(
+                fit: StackFit.expand,
+                children: [
+                  CachedNetworkImage(
+                    imageUrl:
+                    movieImageURL,
+                    fit: BoxFit.cover,
 
-                placeholder: (context, url) => Center(child: ClipRRect(
-                    borderRadius: BorderRadius.circular(kSP20x),
-                    child: Image.asset('images/tmdb_place_holder.png'))),
-                errorWidget: (context, url, error) =>
-                const Center(child: Icon(Icons.error)),
-
-              ),
+                    placeholder: (context, url) => Center(child: ClipRRect(
+                        borderRadius: BorderRadius.circular(kSP20x),
+                        child: Image.asset('images/tmdb_place_holder.png'))),
+                    errorWidget: (context, url, error) =>
+                    const Center(child: Icon(Icons.error)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30,top: 40),
+                    child: Align(
+                      alignment:Alignment.topLeft ,
+                      child: GestureDetector(
+                        onTap:  () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const CircleAvatar(
+                          radius: 20,
+                          backgroundColor: kPinkAccentColor,
+                          child: Icon(
+                            Icons.arrow_back,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
             )
           ),
 
@@ -123,9 +146,9 @@ class AboutMovieAndRecommedMovie extends StatelessWidget {
                  child: Row(
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                    children:  [
-                     ListTileItemView(actors: kActorText,actorsName:actorName ,imageURL: actorImgeURL, radius: 20,),
-                     ListTileItemView(actors: kActressText,actorsName:actorName1 ,imageURL: actorImgeURL1,radius: 20,),
-                     ListTileItemView(actors: kActorText,actorsName:actorName2,imageURL: actorImgeURL2,radius: 20,),
+                     ListTileItemView(actors: kActorText,actorsName:actorName ,imageURL: actorImageURL, radius: 20,),
+                     ListTileItemView(actors: kActressText,actorsName:actorName1 ,imageURL: actorImageURL1,radius: 20,),
+                     ListTileItemView(actors: kActorText,actorsName:actorName2,imageURL: actorImageURL2,radius: 20,),
                    ],
                  ),
                ),
@@ -141,9 +164,9 @@ class AboutMovieAndRecommedMovie extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      ListTileItemView(actors: kCrewText,actorsName:crewName ,imageURL: crewImgeURL,radius: 20,),
-                      ListTileItemView(actors: kCrewText,actorsName:crewName1,imageURL: crewImgeURL1,radius: 20,),
-                      ListTileItemView(actors: kCrewText,actorsName:crewName2 ,imageURL: crewImgeURL2,radius: 20,),
+                      ListTileItemView(actors: kCrewText,actorsName:crewName ,imageURL: crewImageURL,radius: 20,),
+                      ListTileItemView(actors: kCrewText,actorsName:crewName1,imageURL: crewImageURL1,radius: 20,),
+                      ListTileItemView(actors: kCrewText,actorsName:crewName2 ,imageURL: crewImageURL2,radius: 20,),
                     ],
                   ),
                 ),
@@ -160,12 +183,12 @@ class AboutMovieAndRecommedMovie extends StatelessWidget {
                       padding: const EdgeInsets.all(kSP10x),
                       child: ProductionCompanyViewItem(
                         text: productionCompanyName,
-                        imageURL: productionComapnyImgeURL,
+                        imageURL: productionCompanyImageURL,
                       ),
                     ),
                     ProductionCompanyViewItem(
                       text: productionCompanyName1,
-                      imageURL: productionComapnyImgeURL1,
+                      imageURL: productionCompanyImageURL1,
                     ),
                   ],
                 ),
@@ -186,11 +209,11 @@ class AboutMovieAndRecommedMovie extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children:  [
-                    textratingvoteonimgaes,
-                      textratingvoteonimgaes1,
-                      textratingvoteonimgaes2,
-                      textratingvoteonimgaes3,
-                      textratingvoteonimgaes4,
+                      textRatingVotesOnImages,
+                      textRatingVotesOnImages1,
+                      textRatingVotesOnImages2,
+                      textRatingVotesOnImages3,
+                      textRatingVotesOnImages4,
                     ],
                   ),
                 ),
