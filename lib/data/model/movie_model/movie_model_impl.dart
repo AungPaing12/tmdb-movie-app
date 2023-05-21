@@ -1,4 +1,5 @@
 import 'package:movie_app/data/vos/popular_movies_result_vo/popular_movie_result_vo.dart';
+import 'package:movie_app/network/response/actor_detail_response/actor_detail_response.dart';
 import '../../../network/data_agent/movie_data_agent/movie_data_agent.dart';
 import '../../../network/data_agent/movie_data_agent/movie_data_agent_impl.dart';
 import '../../../network/response/movie_details_response/movie_details_response.dart';
@@ -21,6 +22,26 @@ class MovieModelImpl extends MovieModel {
       _movieDataAgent.getMovieDetails(movieID);
 
   @override
+  Future<ActorDetailResponseVO?> getActorDetails(int movieID) => _movieDataAgent.getActorDetails(movieID).then(
+      (value){
+        final actor = value;
+        int  genderData = actor?.gender ?? 0 ;
+        String deathday = actor?.deathday ?? '';
+        if(genderData == 1){
+          actor?.gender = 'male' as int?;
+        }else {
+          actor?.gender = 'female' as int? ;
+        }
+        
+        if(deathday == null){
+          actor?.deathday = '-';
+        }
+
+        return actor ;
+      }
+  );
+
+  @override
   Future<List<MovieVO>?> getMoviesList() => _movieDataAgent.getMoviesList();
 
   @override
@@ -38,4 +59,7 @@ class MovieModelImpl extends MovieModel {
   @override
   Future<List<PopularMovieResultsVO>?> getPopularMovieList() =>
       _movieDataAgent.getPopularMovieList();
-}
+
+
+  }
+

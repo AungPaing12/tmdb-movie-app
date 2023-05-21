@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
 import '../../../constant/api_constant.dart';
+import '../../response/actor_detail_response/actor_detail_response.dart';
 import '../../response/actor_response/actor_response.dart';
 import '../../response/movie_details_response/movie_details_response.dart';
 import '../../response/movie_genres_response/movie_genres_response.dart';
@@ -24,6 +25,12 @@ abstract class MovieAPI {
   Future<MovieDetailsResponse> getMovieDetailsResponse(
       @Query(kQueryParamsApiKey) String apiKey,
       @Path(kPathParameterMovieID) int movieID);
+
+  @GET(kGetActorDetailsEndPoint)
+  Future<ActorDetailResponseVO> getActorDetailsResponse(
+      @Query(kQueryParamsApiKey) String apiKey,
+      @Path(kPathParameterMovieID) int movieID);
+
 
   @GET(kGetActorEndPoint)
   Future<ActorResponse> getActorList(

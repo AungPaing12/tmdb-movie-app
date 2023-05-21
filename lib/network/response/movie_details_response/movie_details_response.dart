@@ -108,4 +108,15 @@ class MovieDetailsResponse {
 
   factory MovieDetailsResponse.fromJson(Map<String, dynamic> json) =>
       _$MovieDetailsResponseFromJson(json);
+
+  @override
+  String toString() {
+    return 'MovieDetailsResponse{adult: $adult, backdropPath: $backdropPath, budget: $budget, genres: $genres,'
+        ' homepage: $homepage, id: $id, imdbId: $imdbId, originalLanguage: $originalLanguage, '
+        'originalTitle: $originalTitle, overview: $overview, popularity: $popularity,'
+        ' posterPath: $posterPath, productionCompanies: $productionCompanies,'
+        ' productionCountries: $productionCountries, releaseDate: $releaseDate,'
+        ' revenue: $revenue, runtime: $runtime, spokenLanguages: $spokenLanguages, '
+        'status: $status, tagline: $tagline, title: $title, video: $video, voteAverage: $voteAverage, voteCount: $voteCount}';
+  }
 }

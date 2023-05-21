@@ -70,6 +70,32 @@ class _MovieAPI implements MovieAPI {
   }
 
   @override
+  Future<ActorDetailResponseVO> getActorDetailsResponse(
+    String apiKey,
+    int movieID,
+  ) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'api_key': apiKey};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ActorDetailResponseVO>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/person/${movieID}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ActorDetailResponseVO.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ActorResponse> getActorList(String apiKey) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'api_key': apiKey};
@@ -152,7 +178,7 @@ class _MovieAPI implements MovieAPI {
     )
             .compose(
               _dio.options,
-              '/top_rated',
+              '/movie/top_rated',
               queryParameters: queryParameters,
               data: _data,
             )

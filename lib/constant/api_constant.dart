@@ -16,11 +16,10 @@ const kGetMovieDetailsEndPoint = '/movie/{$kPathParameterMovieID}';
 const kGetPopularMovieEndPoint = '/movie/popular';
 const kGetActorEndPoint = '/person/popular';
 const kGetTopRatedEndPoint ='/movie/top_rated';
-
+const kGetActorDetailsEndPoint = '/person/{$kPathParameterMovieID}';
 ///API KEY
 const kApiKey = '6ba57a8fa213613268b61de49d70fffe';
 
 ///Path Parameter
 const kPathParameterMovieID = 'movie_id';
 
-const kMovieID = '1020896';

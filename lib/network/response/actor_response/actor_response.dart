@@ -18,5 +18,7 @@ class ActorResponse {
 
   ActorResponse({this.page, this.results, this.totalPages, this.totalResults});
 
-  factory ActorResponse.fromJson(Map<String,dynamic>json) => _$ActorResponseFromJson(json);
+  factory ActorResponse.fromJson(Map<String, dynamic>json) =>
+      _$ActorResponseFromJson(json);
+
 }

@@ -40,4 +40,9 @@ class ActorResultsVO {
         this.profilePath});
 
   factory ActorResultsVO.fromJson(Map<String,dynamic>json) => _$ActorResultsVOFromJson(json);
+
+  @override
+  String toString() {
+    return 'ActorResultsVO{adult: $adult, gender: $gender, id: $id, knownFor: $knownFor, knownForDepartment: $knownForDepartment, name: $name, popularity: $popularity, profilePath: $profilePath}';
+  }
 }

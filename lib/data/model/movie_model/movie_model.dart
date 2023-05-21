@@ -1,4 +1,6 @@
 
+import 'package:movie_app/network/response/actor_detail_response/actor_detail_response.dart';
+
 import '../../../network/response/movie_details_response/movie_details_response.dart';
 import '../../vos/actor_vo/actor_result_vo.dart';
 import '../../vos/movie_genres_vo/movie_genres_vo.dart';
@@ -11,6 +13,8 @@ abstract class MovieModel {
   Future<List<ActorResultsVO>?> getActorList();
 
   Future<MovieDetailsResponse?> getMovieDetails(int movieID);
+
+  Future<ActorDetailResponseVO?> getActorDetails(int movieID);
 
   Future<List<MovieGenresVO>?> getMovieGenreList();
 

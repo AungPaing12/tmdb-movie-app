@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movie_app/data/vos/movie_genres_vo/movie_genres_vo.dart';
+import 'package:movie_app/network/response/actor_detail_response/actor_detail_response.dart';
 import '../../../constant/api_constant.dart';
 import '../../../data/vos/actor_vo/actor_result_vo.dart';
 import '../../../data/vos/movie_vo/result_vo.dart';
@@ -26,47 +27,40 @@ class MovieDataAgentImpl extends MovieDataAgent {
       _api.getMovieDetailsResponse(kApiKey, movieID);
 
   @override
-  Future<List<MovieVO>?> getMoviesList() =>
-      _api
-          .getNowPlayingMovieResponse(kApiKey)
-          .asStream()
-          .map((event) => event.results)
-          .first;
+  Future<ActorDetailResponseVO?> getActorDetails(int movieID) =>
+      _api.getActorDetailsResponse(kApiKey, movieID);
+
+  @override
+  Future<List<MovieVO>?> getMoviesList() => _api
+      .getNowPlayingMovieResponse(kApiKey)
+      .asStream()
+      .map((event) => event.results)
+      .first;
 
   @override
   Future<List<ActorResultsVO>?> getActorList() =>
-      _api
-          .getActorList(kApiKey)
-          .asStream()
-          .map((event) => event.results)
-          .first;
+      _api.getActorList(kApiKey).asStream().map((event) => event.results).first;
 
   @override
-  Future<List<MovieGenresVO>?> getMovieGenresList() =>
-      _api
-          .getMovieGenresResponse(kApiKey)
-          .asStream()
-          .map((event) => event.genres)
-          .first;
+  Future<List<MovieGenresVO>?> getMovieGenresList() => _api
+      .getMovieGenresResponse(kApiKey)
+      .asStream()
+      .map((event) => event.genres)
+      .first;
 
   @override
-  Future<List<PopularMovieResultsVO>?> getPopularMovieList() =>
-      _api
-          .getPopularMovie(kApiKey)
-          .asStream()
-          .map((event) => event.results)
-          .first;
+  Future<List<PopularMovieResultsVO>?> getPopularMovieList() => _api
+      .getPopularMovie(kApiKey)
+      .asStream()
+      .map((event) => event.results)
+      .first;
 
   @override
-  Future<List<MovieVO>?> getTopRatedMovie() =>
-      _api
+  Future<List<MovieVO>?> getTopRatedMovie() => _api
           .getTopRated(kApiKey)
           .asStream()
           .map((event) => event.results)
-          .first
-          .catchError((error) {
-        if (kDebugMode) {
-          print("Error=============>$error");
-        }
-      });
+          .first;
+
+
 }
