@@ -213,21 +213,27 @@ class AboutMovieAndRecommendMovie extends StatelessWidget {
                       ))),
               SizedBox(
                 height: 100,
-
-                child: (productionCompanyVO == null || (productionCompanyVO?.isEmpty?? true))?const CircularProgressIndicator():
-                ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: productionCompanyVO?.length,
-                  itemBuilder: (context, index) {
-                    Padding(
-                      padding: const EdgeInsets.all(kSP15x),
-                      child: ProductionCompanyViewItem(
-                        text: productionCompanyVO?[index].name ?? '',
-                        imageURL: productionCompanyVO?[index].logoPath ?? '',
+                child: (productionCompanyVO == null ||
+                        (productionCompanyVO?.isEmpty ?? true))
+                    ? const CircularProgressIndicator()
+                    : ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: productionCompanyVO?.length,
+                        itemBuilder: (context, index) {
+                          ///return ကျန်ခဲ့မှတော့ data တွေက ဘယ်ပေါ်မတုံး
+                          // ဒါမျိုးက မဖြစ်သင့်တဲ့ အမှားနော်
+                          // နောက်ဆို သတိထားပေးပါ
+                          // ဒီလိုအမှားမျိုးမဖြစ်သင့်ပါဘူး
+                          return Padding(
+                            padding: const EdgeInsets.all(kSP15x),
+                            child: ProductionCompanyViewItem(
+                              text: productionCompanyVO?[index].name ?? '',
+                              imageURL:
+                                  productionCompanyVO?[index].logoPath ?? '',
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
               const SizedBox(
                 height: kSP20x,
@@ -334,7 +340,7 @@ class MovieGenre extends StatelessWidget {
 
 class RunTime extends StatelessWidget {
   const RunTime({Key? key, required this.runTime}) : super(key: key);
-   final int runTime;
+  final int runTime;
 
   @override
   Widget build(BuildContext context) {
