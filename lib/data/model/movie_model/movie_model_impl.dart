@@ -1,4 +1,8 @@
+import 'package:movie_app/data/vos/cast_vo/cast_vo.dart';
+import 'package:movie_app/data/vos/crew_vo/crew_vo.dart';
+import 'package:movie_app/data/vos/genres_vo/genres_vo.dart';
 import 'package:movie_app/data/vos/popular_movies_result_vo/popular_movie_result_vo.dart';
+import 'package:movie_app/data/vos/production_companies_vo/production_companies_vo.dart';
 import 'package:movie_app/network/response/actor_detail_response/actor_detail_response.dart';
 import '../../../network/data_agent/movie_data_agent/movie_data_agent.dart';
 import '../../../network/data_agent/movie_data_agent/movie_data_agent_impl.dart';
@@ -22,24 +26,14 @@ class MovieModelImpl extends MovieModel {
       _movieDataAgent.getMovieDetails(movieID);
 
   @override
-  Future<ActorDetailResponseVO?> getActorDetails(int movieID) => _movieDataAgent.getActorDetails(movieID).then(
-      (value){
-        final actor = value;
-        int  genderData = actor?.gender ?? 0 ;
-        String deathday = actor?.deathday ?? '';
-        if(genderData == 1){
-          actor?.gender = 'male' as int?;
-        }else {
-          actor?.gender = 'female' as int? ;
+  Future<ActorDetailResponseVO?> getActorDetails(int movieID) =>
+      _movieDataAgent.getActorDetails(movieID).then((value) {
+        final actorData = value;
+        if (actorData?.deathday == null || actorData?.deathday == '') {
+          actorData?.deathday = '-';
         }
-        
-        if(deathday == null){
-          actor?.deathday = '-';
-        }
-
-        return actor ;
-      }
-  );
+        return actorData;
+      });
 
   @override
   Future<List<MovieVO>?> getMoviesList() => _movieDataAgent.getMoviesList();
@@ -60,6 +54,29 @@ class MovieModelImpl extends MovieModel {
   Future<List<PopularMovieResultsVO>?> getPopularMovieList() =>
       _movieDataAgent.getPopularMovieList();
 
+  @override
+  Future<List<CastVO>?> getCast(int movieID) =>
+      _movieDataAgent.getCast(movieID);
 
-  }
+  @override
+  Future<List<CrewVO>?> getCrew(int movieID) =>
+      _movieDataAgent.getCrew(movieID);
+
+  @override
+  Future<List<PopularMovieResultsVO>?> getSimilarMovieList(int movieID) =>
+      _movieDataAgent.getSimilarMovieList(movieID);
+
+  @override
+  Future<List<ProductionCompaniesVO>?> getProductionCompanyList(int movieID) =>
+      _movieDataAgent.getProductionCompanyVO(movieID);
+
+  @override
+  Future<List<GenresVO>?> getGenre(int movieID) =>
+      _movieDataAgent.getGenre(movieID);
+
+
+}
+
+
+
 

@@ -17,6 +17,8 @@ const kGetPopularMovieEndPoint = '/movie/popular';
 const kGetActorEndPoint = '/person/popular';
 const kGetTopRatedEndPoint ='/movie/top_rated';
 const kGetActorDetailsEndPoint = '/person/{$kPathParameterMovieID}';
+const kGetCreditEndPoint = '/movie/{$kPathParameterMovieID}/credits';
+const kGetSimilarEndPoint = '/movie/{$kPathParameterMovieID}/similar';
 ///API KEY
 const kApiKey = '6ba57a8fa213613268b61de49d70fffe';
 

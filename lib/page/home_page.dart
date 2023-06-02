@@ -8,14 +8,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  const Scaffold(
       backgroundColor: kBlackColor,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
             SearchMovieBarAndSearchIconViewItem(),
-            MovieGenreViewItem(),
+            MovieTypeScrollItemView(),
             CarouselSliderViewItem(),
             SmallestMovieViewItem(),
             TopRatedMovieViewItem(),

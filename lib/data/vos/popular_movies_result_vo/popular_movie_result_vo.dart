@@ -62,4 +62,8 @@ class PopularMovieResultsVO {
   factory PopularMovieResultsVO.fromJson(Map<String, dynamic> json) =>
       _$PopularMovieResultsVOFromJson(json);
 
+  @override
+  String toString() {
+    return 'PopularMovieResultsVO{adult: $adult, backdropPath: $backdropPath, genreIds: $genreIds, id: $id, originalLanguage: $originalLanguage, originalTitle: $originalTitle, overview: $overview, popularity: $popularity, posterPath: $posterPath, releaseDate: $releaseDate, title: $title, video: $video, voteAverage: $voteAverage, voteCount: $voteCount}';
+  }
 }

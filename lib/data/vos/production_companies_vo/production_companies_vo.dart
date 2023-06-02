@@ -21,4 +21,9 @@ class ProductionCompaniesVO {
 
   factory ProductionCompaniesVO.fromJson(Map<String, dynamic> json) =>
       _$ProductionCompaniesVOFromJson(json);
+
+  @override
+  String toString() {
+    return 'ProductionCompaniesVO{id: $id, logoPath: $logoPath, name: $name, originCountry: $originCountry}';
+  }
 }

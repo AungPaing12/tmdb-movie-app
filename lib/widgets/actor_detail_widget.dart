@@ -1,38 +1,27 @@
-import 'dart:ffi';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/constant/colors.dart';
 import 'package:movie_app/constant/dimens.dart';
 import 'package:movie_app/widgets/text_rating_votes_on_image.dart';
+import '../constant/api_constant.dart';
 import '../constant/strings.dart';
+import '../data/vos/popular_movies_result_vo/popular_movie_result_vo.dart';
+import '../network/response/actor_detail_response/actor_detail_response.dart';
 import 'easy_text.dart';
 
-
 class ActorsInfoAndHisMovies extends StatelessWidget {
-  const ActorsInfoAndHisMovies(
-      {Key? key,
-      required this.actorName,
-      required this.biography,
-      required this.placeOfBirth,
-      required this.birthday,
-      required this.deadDay,
-      required this.gender,
-      required this.popularity,
-      required this.actorImageURL})
+  const ActorsInfoAndHisMovies({Key? key,
+    this.actorDetailResponseVO,
+    this.popularMovieVO
+  })
       : super(key: key);
-  final String actorName;
-  final String biography;
-  final String placeOfBirth;
-  final String birthday;
-  final String deadDay;
-  final int gender;
-  final double popularity;
-  final String actorImageURL;
 
+  final ActorDetailResponseVO? actorDetailResponseVO;
+  final List<PopularMovieResultsVO>? popularMovieVO;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBlackColor,
       body: NestedScrollView(
         floatHeaderSlivers: true,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
@@ -41,11 +30,11 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
               automaticallyImplyLeading: false,
               floating: true,
               backgroundColor: kBlackColor,
-              expandedHeight: kActorSliveAppBarHeight,
+              expandedHeight: kActorSliverAppBarHeight,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                   title: EasyText(
-                      text: actorName,
+                      text: actorDetailResponseVO?.name ?? '',
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
                       color: kWhiteColor),
@@ -54,7 +43,7 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                     fit: StackFit.expand,
                     children: [
                       CachedNetworkImage(
-                        imageUrl: actorImageURL,
+                        imageUrl: '$kPrefixEndPoint${actorDetailResponseVO?.profilePath ?? ''}',
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Center(
                             child: ClipRRect(
@@ -85,11 +74,11 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                     ],
                   ))),
         ],
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Container(
-            width: kDetailScreenOfActorSizeWidth,
-            color: kBlackColor,
+        body: Container(
+          width: kDetailScreenOfActorSizeWidth,
+          color: kBlackColor,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
             child: Column(
               children: [
                 const Padding(
@@ -114,12 +103,11 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: kSP10x, vertical: kSP10x),
                   child: EasyText(
-                    text: biography,
+                    text: actorDetailResponseVO?.biography ?? '',
                     fontSize: kFontSize16x,
                     color: kGreyColor,
                   ),
                 ),
-
                 const Padding(
                   padding: EdgeInsets.only(left: kSP10x, top: kSP30x),
                   child: Align(
@@ -152,7 +140,7 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                     ),
                     Expanded(
                       child: EasyText(
-                        text: placeOfBirth,
+                        text: actorDetailResponseVO?.placeOfBirth ?? '',
                         color: kGreyColor,
                         fontSize: kFontSize16x,
                       ),
@@ -175,7 +163,7 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                       width: 115,
                     ),
                     EasyText(
-                      text: birthday,
+                      text: actorDetailResponseVO?.birthday ?? '',
                       color: kGreyColor,
                       fontSize: kFontSize16x,
                     ),
@@ -184,45 +172,13 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                 const SizedBox(
                   height: kSP10x,
                 ),
-                Row(
-                  children: [
-                    const Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: EasyText(
-                          text: kDeadDayText,
-                          color: kGreyColor,
-                          fontSize: 16,
-                        )),
-                    const SizedBox(
-                      width: kSP115x,
-                    ),
-                    EasyText(
-                      text: deadDay,
-                      color: kGreyColor,
-                      fontSize: 16,
-                    ),
-                  ],
-                ),
+                ///dead day
+                DeathDay(deathDay: actorDetailResponseVO?.deathday ?? '',),
                 const SizedBox(
                   height: kSP10x,
                 ),
-                const Row(
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: EasyText(
-                          text: kGenderText,
-                          color: kGreyColor,
-                          fontSize: 16,
-                        )),
-                    SizedBox(width: kSP125x),
-                    EasyText(
-                      text: '1',
-                      color: kGreyColor,
-                      fontSize: 16,
-                    ),
-                  ],
-                ),
+                 ///gender
+                Gender(gender: actorDetailResponseVO?.gender ?? 0,),
                 const SizedBox(
                   height: kSP10x,
                 ),
@@ -239,7 +195,7 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                       width: kSp104x,
                     ),
                     EasyText(
-                      text: '$popularity',
+                      text: '${actorDetailResponseVO?.popularity ?? 0}',
                       color: kGreyColor,
                       fontSize: kFontSize16x,
                     ),
@@ -264,60 +220,21 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: kKnownForMoviesSizeWidth,
-                  height: kKnownForMoviesSizeHeight,
-                  child: ListView(
+                  width: kPopularMovieSizeWidth,
+                  height: kPopularMovieSizeHeight,
+                  child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    children: const [
-                      TextRatingVotesOnImages(
-                        imageURL:
-                            'https://www.abystyle.com/3679429-large_default/demon-slayer-poster-entertainment-district-915x61cm.jpg',
-                        movieName: 'Demon Slayer',
-                        rating: 12,
-                        votes: 323,
-                        positionFillTop1: 140,
-                      ),
-                      TextRatingVotesOnImages(
-                        imageURL:
-                            'https://thecomicbookstore.in/wp-content/uploads/2022/09/TCBS2491.jpg',
-                        movieName: 'Attack On Titan',
-                        rating: 12,
-                        votes: 323,
-                        positionFillTop1: 140,
-                      ),
-                      TextRatingVotesOnImages(
-                        imageURL:
-                            'https://ih1.redbubble.net/image.3304365345.6778/poster,504x498,f8f8f8-pad,600x600,f8f8f8.jpg',
-                        movieName: 'One Piece',
-                        rating: 12,
-                        votes: 323,
-                        positionFillTop1: 140,
-                      ),
-                      TextRatingVotesOnImages(
-                        imageURL:
-                            'https://m.media-amazon.com/images/I/71xz7wU39xL._AC_UF894,1000_QL80_.jpg',
-                        movieName: 'Bleach',
-                        rating: 12,
-                        votes: 323,
-                        positionFillTop1: 140,
-                      ),
-                      TextRatingVotesOnImages(
-                        imageURL:
-                            'https://pbs.twimg.com/media/FNLNGSSXEAE7-5_.jpg',
-                        movieName: 'Spy Family',
-                        rating: 9.5,
-                        votes: 32434,
-                        positionFillTop1: 140,
-                      ),
-                      TextRatingVotesOnImages(
-                        imageURL:
-                            'https://resize.cdn.otakumode.com/ex/1200.1200/shop/product/24a2289b9fec4ecea7cf49b919a337c5.jpg',
-                        movieName: 'Susume No Tojimaru',
-                        rating: 12,
-                        votes: 323,
-                        positionFillTop1: 140,
-                      ),
-                    ],
+                    itemCount: popularMovieVO?.length,
+                    itemBuilder: (context, index) {
+                      return TextRatingVotesOnImages(
+                        imageURL: popularMovieVO?[index].posterPath ?? '',
+                        positionFillTop1: 100,
+                        movieName: popularMovieVO?[index].title ?? '',
+                        rating: popularMovieVO?[index].voteAverage ?? 0,
+                        votes: popularMovieVO?[index].voteCount ?? 0,
+                        movieID: popularMovieVO?[index].id ?? 0,
+                      );
+                    },
                   ),
                 ),
               ],
@@ -325,6 +242,59 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+
+class DeathDay extends StatelessWidget {
+  const DeathDay({Key? key, required this.deathDay}) : super(key: key);
+  final String deathDay;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: EasyText(
+              text: kDeadDayText,
+              color: kGreyColor,
+              fontSize: 16,
+            )),
+        const SizedBox(
+          width: kSP115x,
+        ),
+        EasyText(
+          text: deathDay,
+          color: kGreyColor,
+          fontSize: 16,
+        ),
+      ],
+    );
+  }
+}
+
+class Gender extends StatelessWidget {
+  const Gender({Key? key, required this.gender}) : super(key: key);
+  final int gender;
+  @override
+  Widget build(BuildContext context) {
+    return  Row(
+      children: [
+        const Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: EasyText(
+              text: kGenderText,
+              color: kGreyColor,
+              fontSize: 16,
+            )),
+        const SizedBox(width: kSP125x),
+        EasyText(
+          text: (gender == 1) ? 'Female' : (gender == 2) ? 'Male' : 'SomethingWrong',
+          color: kGreyColor,
+          fontSize: 16,
+        ),
+      ],
     );
   }
 }

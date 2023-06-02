@@ -11,7 +11,6 @@ import '../data/model/movie_model/movie_model.dart';
 import '../data/vos/movie_genres_vo/movie_genres_vo.dart';
 import '../data/vos/movie_vo/result_vo.dart';
 import '../data/vos/popular_movies_result_vo/popular_movie_result_vo.dart';
-import '../widgets/movie_details_widget.dart';
 import '../widgets/movie_genre.dart';
 import '../widgets/text_rating_votes_on_image.dart';
 
@@ -64,49 +63,79 @@ class SearchMovieBarAndSearchIconViewItem extends StatelessWidget {
   }
 }
 
-class MovieGenreViewItem extends StatelessWidget {
-  const MovieGenreViewItem({Key? key}) : super(key: key);
+class MovieTypeScrollItemView extends StatefulWidget {
+  const MovieTypeScrollItemView({
+    Key? key,
+    this.genresList,
+  }) : super(key: key);
+  final List<MovieGenresVO>? genresList;
+
+  @override
+  State<MovieTypeScrollItemView> createState() =>
+      _MovieTypeScrollItemViewState();
+}
+
+class _MovieTypeScrollItemViewState extends State<MovieTypeScrollItemView> {
+  MovieModel movieModel = MovieModelImpl();
+  List<MovieGenresVO> genreList = [];
+
+  @override
+  void initState() {
+    movieModel.getMovieGenreList().then((value) {
+      setState(() {
+        genreList = value ?? [];
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<MovieGenresVO>?>(
-        future: _movieModel.getMovieGenreList(),
-        builder: (context, snapShot) {
-          if (snapShot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapShot.hasError) {
-            return const Center(
-              child: Text("Error Fetching"),
-            );
-          }
-          final listGenre = snapShot.data;
-          return MovieGenreScrollViewItem(
-            movieGenres: listGenre,
-          );
+    return MovieGenreView(
+      genresList: genreList,
+      onTap: (genres) {
+        setState(() {
+          genreList = genreList.map((e) {
+            if (e == genres) {
+              e.isSelect = true;
+            } else {
+              e.isSelect = false;
+            }
+
+            return e;
+          }).toList();
         });
+      },
+    );
   }
 }
 
-class MovieGenreScrollViewItem extends StatelessWidget {
-  const MovieGenreScrollViewItem({Key? key, required this.movieGenres})
+class MovieGenreView extends StatelessWidget {
+  const MovieGenreView(
+      {Key? key, required this.genresList, required this.onTap})
       : super(key: key);
-  final List<MovieGenresVO>? movieGenres;
+  final List<MovieGenresVO> genresList;
+  final Function(MovieGenresVO) onTap;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: kMovieGenreSearchWidth,
-      height: kMovieGenreSearchHeight,
+      height: 50,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: movieGenres?.length,
+        itemCount: genresList.length,
+        padding: const EdgeInsets.symmetric(horizontal: kSP10x),
         itemBuilder: (context, index) {
-          return MovieGenre(
-            text: movieGenres?[index].name ?? '',
-            color: kPinkAccentColor,
+          return GestureDetector(
+            onTap: () {
+              onTap(genresList[index]);
+            },
+            child: MovieGenre(
+              text: genresList[index].name ?? '',
+              color:
+                  (genresList[index].isSelect) ? kPinkAccentColor : kBlackColor,
+            ),
           );
         },
       ),
@@ -256,155 +285,19 @@ class SmallestMoviesScrollViewItem extends StatelessWidget {
       child: SizedBox(
         width: kSmallestMoviesScrollSizeWidth,
         height: kSmallestMoviesScrollSizeHeight,
-        child: ListView(
+        child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          children: [
-            GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const AboutMovieAndRecommendMovie(
-                            storyLine:
-                                "On the lush alien world of Pandora live the Na'vi, beings who appear primitive but are highly evolved. Because the planet's environment is poisonous, human/Na'vi hybrids, called Avatars, must link to human minds to allow for free movement on Pandora. Jake Sully (Sam Worthington), a paralyzed former Marine, becomes mobile again through one such Avatar and falls in love with a Na'vi woman (Zoe Saldana). As a bond with her grows, he is drawn into a battle for the survival of her world.",
-                            movieName: 'Avator :The Way Of Water',
-                            productionCompanyName: '20th Century Studios',
-                            productionCompanyName1: 'TSG Entertainment',
-                            productionCompanyImageURL:
-                                'https://media.sketchfab.com/models/1d21693ae946418a807c8b9fcd6aa4e1/thumbnails/352dd88f2daa4fb8810a01d0858fb8b0/be2b9214fcea42a0a4729bdd44f1eaa8.jpeg',
-                            productionCompanyImageURL1:
-                                'https://i.ytimg.com/vi/9kNJYLgYKKU/maxresdefault.jpg',
-                            movieImageURL:
-                                'https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjQxNTE1MDA@._V1_.jpg',
-                            actorName: "Sam Worthington",
-                            actorName1: 'Zoe Saldana',
-                            actorName2: 'Stephen Lang',
-                            crewName: 'Jon Landau',
-                            crewName1: 'James Cameron',
-                            crewName2: 'Russell Carpenter',
-                            actorImageURL:
-                                'https://m.media-amazon.com/images/M/MV5BZWUwNmEwZTUtYzMxMS00ODg5LTlmYjItMGU4ZjNmN2Q1NjkwXkEyXkFqcGdeQXVyMTM1MjAxMDc3._V1_.jpg',
-                            actorImageURL1:
-                                'https://static.independent.co.uk/s3fs-public/thumbnails/image/2013/12/03/17/Zoe-Saldana-Getty.jpg',
-                            actorImageURL2:
-                                'https://m.media-amazon.com/images/M/MV5BMjE4NzYwNTc5Nl5BMl5BanBnXkFtZTcwMzQzOTUyNw@@._V1_.jpg',
-                            crewImageURL:
-                                'https://pbs.twimg.com/profile_images/1029105661030805504/nVJZpIHI_400x400.jpg',
-                            crewImageURL1:
-                                'https://media.gq.com/photos/637692e3c8b11c4c41b61ab5/master/w_1884,h_2785,c_limit/GQ1222_Cameron_02.jpg',
-                            crewImageURL2:
-                                'https://image.tmdb.org/t/p/w500/lUvCkzSLCJe7HcQGSIO4wLHuRF.jpg',
-                            textRatingVotesOnImages: TextRatingVotesOnImages(
-                              imageURL:
-                                  'https://www.abystyle.com/3679429-large_default/demon-slayer-poster-entertainment-district-915x61cm.jpg',
-                              movieName: 'Demon Slayer',
-                              rating: 9.8,
-                              votes: 34324,
-                              positionFillTop1: 140,
-                            ),
-                            textRatingVotesOnImages1: TextRatingVotesOnImages(
-                              imageURL:
-                                  'https://thecomicbookstore.in/wp-content/uploads/2022/09/TCBS2491.jpg',
-                              movieName: 'Attack On Titan',
-                              rating: 9.8,
-                              votes: 34324,
-                              positionFillTop1: 140,
-                            ),
-                            textRatingVotesOnImages2: TextRatingVotesOnImages(
-                              imageURL:
-                                  'https://ih1.redbubble.net/image.3304365345.6778/poster,504x498,f8f8f8-pad,600x600,f8f8f8.jpg',
-                              movieName: 'One Piece',
-                              rating: 9.8,
-                              votes: 34324,
-                              positionFillTop1: 140,
-                            ),
-                            textRatingVotesOnImages3: TextRatingVotesOnImages(
-                                imageURL:
-                                    'https://m.media-amazon.com/images/I/71xz7wU39xL._AC_UF894,1000_QL80_.jpg',
-                                movieName: 'Bleach',
-                                rating: 9.8,
-                                votes: 34324,
-                                positionFillTop1: 140),
-                            textRatingVotesOnImages4: TextRatingVotesOnImages(
-                              imageURL:
-                                  'https://pbs.twimg.com/media/FNLNGSSXEAE7-5_.jpg',
-                              movieName: 'Spy Family',
-                              rating: 9.8,
-                              votes: 34324,
-                              positionFillTop1: 140,
-                            ), productionCompanyName2: '',
-                        productionCompanyImageURL2: '', genres: '',runTime: 2,
-                          )));
-                },
-                child: TextRatingVotesOnImages(
-                  imageURL: movieVo?[0].posterPath ?? '',
-                  movieName: movieVo?[0].title ?? '',
-                  rating: movieVo?[0].voteAverage ?? 0.0,
-                  votes: movieVo?[0].voteCount ?? 0,
-                  positionFillTop1: 110,
-                )),
-            TextRatingVotesOnImages(
-              imageURL: movieVo?[1].posterPath ?? '',
-              movieName: movieVo?[1].title ?? '',
-              rating: movieVo?[1].voteAverage ?? 0.0,
-              votes: movieVo?[1].voteCount ?? 0,
+          itemCount: movieVo?.length,
+          itemBuilder: (context, index) {
+            return TextRatingVotesOnImages(
+              imageURL: movieVo?[index].posterPath ?? '',
+              movieName: movieVo?[index].title ?? '',
+              votes: movieVo?[index].voteCount ?? 0,
+              rating: movieVo?[index].voteAverage ?? 0,
               positionFillTop1: 110,
-            ),
-            TextRatingVotesOnImages(
-              imageURL: movieVo?[2].posterPath ?? '',
-              movieName: movieVo?[2].title ?? '',
-              rating: movieVo?[2].voteAverage ?? 0.0,
-              votes: movieVo?[2].voteCount ?? 0,
-              positionFillTop1: 110,
-            ),
-            TextRatingVotesOnImages(
-              imageURL: movieVo?[3].posterPath ?? '',
-              movieName: movieVo?[3].title ?? '',
-              rating: movieVo?[3].voteAverage ?? 0.0,
-              votes: movieVo?[3].voteCount ?? 0,
-              positionFillTop1: 110,
-            ),
-            TextRatingVotesOnImages(
-              imageURL: movieVo?[4].posterPath ?? '',
-              movieName: movieVo?[4].title ?? '',
-              rating: movieVo?[4].voteAverage ?? 0.0,
-              votes: movieVo?[4].voteCount ?? 0,
-              positionFillTop1: 110,
-            ),
-            TextRatingVotesOnImages(
-              imageURL: movieVo?[5].posterPath ?? '',
-              movieName: movieVo?[5].title ?? '',
-              rating: movieVo?[5].voteAverage ?? 0.0,
-              votes: movieVo?[5].voteCount ?? 0,
-              positionFillTop1: 110,
-            ),
-            TextRatingVotesOnImages(
-              imageURL: movieVo?[6].posterPath ?? '',
-              movieName: movieVo?[6].title ?? '',
-              rating: movieVo?[6].voteAverage ?? 0.0,
-              votes: movieVo?[6].voteCount ?? 0,
-              positionFillTop1: 110,
-            ),
-            TextRatingVotesOnImages(
-              imageURL: movieVo?[7].posterPath ?? '',
-              movieName: movieVo?[7].title ?? '',
-              rating: movieVo?[7].voteAverage ?? 0.0,
-              votes: movieVo?[7].voteCount ?? 0,
-              positionFillTop1: 110,
-            ),
-            TextRatingVotesOnImages(
-              imageURL: movieVo?[8].posterPath ?? '',
-              movieName: movieVo?[8].title ?? '',
-              rating: movieVo?[8].voteAverage ?? 0.0,
-              votes: movieVo?[8].voteCount ?? 0,
-              positionFillTop1: 110,
-            ),
-            TextRatingVotesOnImages(
-              imageURL: movieVo?[9].posterPath ?? '',
-              movieName: movieVo?[9].title ?? '',
-              rating: movieVo?[9].voteAverage ?? 0.0,
-              votes: movieVo?[9].voteCount ?? 0,
-              positionFillTop1: 110,
-            ),
-          ],
+              movieID: movieVo?[index].id ?? 0,
+            );
+          },
         ),
       ),
     );
@@ -469,6 +362,7 @@ class YouMayLikeMovieViewItem extends StatelessWidget {
                 rating: topRated?[index].voteAverage ?? 0,
                 movieName: topRated?[index].title ?? '',
                 positionFillTop1: 140,
+                movieID: topRated?[index].id ?? 0,
               );
             },
           ),
@@ -536,6 +430,7 @@ class PopularMovieViewItem extends StatelessWidget {
                 movieName: popularMovieVO?[index].title ?? '',
                 rating: popularMovieVO?[index].voteAverage ?? 0,
                 votes: popularMovieVO?[index].voteCount ?? 0,
+                movieID: popularMovieVO?[index].id ?? 0,
               );
             },
           ),
@@ -545,21 +440,3 @@ class PopularMovieViewItem extends StatelessWidget {
   }
 }
 
-/*
-class ActorsViewItem extends StatelessWidget {
-  const ActorsViewItem({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: kSP20x),
-      child: Container(
-        width: kActorsSizeWidth,
-        height: kActorsSizeHeight,
-        color: kBlackColor,
-        child: const Actor(),
-      ),
-    );
-  }
-}
-*/

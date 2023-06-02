@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/constant/colors.dart';
+import 'package:movie_app/data/vos/movie_vo/result_vo.dart';
 import 'package:movie_app/widgets/easy_text.dart';
 
 import '../constant/api_constant.dart';
+import '../page/movie_detail_view_item.dart';
 
 class TextRatingVotesOnImages extends StatelessWidget {
   const TextRatingVotesOnImages(
@@ -12,13 +14,15 @@ class TextRatingVotesOnImages extends StatelessWidget {
       required this.movieName,
       required this.rating,
       required this.votes,
-      required this.positionFillTop1})
+      required this.positionFillTop1,
+       required this.movieID})
       : super(key: key);
   final String imageURL;
   final String movieName;
   final double rating;
   final int votes;
   final double positionFillTop1;
+  final int movieID;
 
   @override
   Widget build(BuildContext context) {
@@ -31,20 +35,28 @@ class TextRatingVotesOnImages extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: CachedNetworkImage(
-                imageUrl: kPrefixEndPoint + imageURL,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-                placeholder: (context, url) => Center(
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          'images/tmdb_place_holder.png',
-                          fit: BoxFit.cover,
-                        ))),
-                errorWidget: (context, url, error) =>
-                    const Center(child: Icon(Icons.error)),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MovieDetailViewItem(
+                            movieID: movieID,
+                          )));
+                },
+                child: CachedNetworkImage(
+                  imageUrl: kPrefixEndPoint + imageURL,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  placeholder: (context, url) => Center(
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(
+                            'images/tmdb_place_holder.png',
+                            fit: BoxFit.cover,
+                          ))),
+                  errorWidget: (context, url, error) =>
+                      const Center(child: Icon(Icons.error)),
+                ),
               ),
             ),
             Positioned.fill(

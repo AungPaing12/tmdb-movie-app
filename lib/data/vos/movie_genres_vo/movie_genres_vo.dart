@@ -8,11 +8,11 @@ class MovieGenresVO {
   @JsonKey(name: 'id')
   int? id;
 
-
   @JsonKey(name: 'name')
   String? name;
 
-  MovieGenresVO(this.id, this.name);
+  bool isSelect;
+  MovieGenresVO({this.id, this.name,this.isSelect = false});
 
 
   factory MovieGenresVO.fromJson(Map<String, dynamic> json) =>

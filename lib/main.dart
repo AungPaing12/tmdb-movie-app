@@ -7,9 +7,9 @@ MovieModel _movieModel = MovieModelImpl();
 
 void main() {
   runApp(const MyApp());
-  // _movieModel.getActorDetails(15737).then((value) => print("Movie Lie==============>$value")).catchError((onError){
-  //   print(onError);
-  // });
+   _movieModel.getProductionCompanyList(603692).then((value) => print("Movie Data==============>$value")).catchError((onError){
+     print(onError);
+   });
 }
 
 class MyApp extends StatelessWidget {
