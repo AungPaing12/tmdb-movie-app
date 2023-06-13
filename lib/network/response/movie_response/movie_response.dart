@@ -1,15 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
-
-import '../../../data/vos/date_vo/date_vo.dart';
 import '../../../data/vos/movie_vo/result_vo.dart';
 
 part 'movie_response.g.dart';
 
 @JsonSerializable()
 class MovieResponse {
-  @JsonKey(name: 'dates')
-  DatesVO? dates;
-
   @JsonKey(name: 'page')
   int? page;
 
@@ -23,7 +18,7 @@ class MovieResponse {
   int? totalResults;
 
   MovieResponse(
-      {this.dates,
+      {
         this.page,
         this.results,
         this.totalPages,

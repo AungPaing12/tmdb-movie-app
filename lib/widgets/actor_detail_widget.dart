@@ -5,7 +5,7 @@ import 'package:movie_app/constant/dimens.dart';
 import 'package:movie_app/widgets/text_rating_votes_on_image.dart';
 import '../constant/api_constant.dart';
 import '../constant/strings.dart';
-import '../data/vos/popular_movies_result_vo/popular_movie_result_vo.dart';
+import '../data/vos/movie_vo/result_vo.dart';
 import '../network/response/actor_detail_response/actor_detail_response.dart';
 import 'easy_text.dart';
 
@@ -17,7 +17,7 @@ class ActorsInfoAndHisMovies extends StatelessWidget {
       : super(key: key);
 
   final ActorDetailResponseVO? actorDetailResponseVO;
-  final List<PopularMovieResultsVO>? popularMovieVO;
+  final List<MovieVO>? popularMovieVO;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

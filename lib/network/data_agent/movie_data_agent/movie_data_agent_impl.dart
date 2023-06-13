@@ -8,7 +8,6 @@ import 'package:movie_app/network/response/actor_detail_response/actor_detail_re
 import '../../../constant/api_constant.dart';
 import '../../../data/vos/actor_vo/actor_result_vo.dart';
 import '../../../data/vos/movie_vo/result_vo.dart';
-import '../../../data/vos/popular_movies_result_vo/popular_movie_result_vo.dart';
 import '../../api/movie_api/movie_api.dart';
 import '../../response/movie_details_response/movie_details_response.dart';
 import 'movie_data_agent.dart';
@@ -51,7 +50,7 @@ class MovieDataAgentImpl extends MovieDataAgent {
       .first;
 
   @override
-  Future<List<PopularMovieResultsVO>?> getPopularMovieList() => _api
+  Future<List<MovieVO>?> getPopularMovieList() => _api
       .getPopularMovie(kApiKey)
       .asStream()
       .map((event) => event.results)
@@ -76,14 +75,14 @@ class MovieDataAgentImpl extends MovieDataAgent {
       .first;
 
   @override
-  Future<List<PopularMovieResultsVO>?> getSimilarMovieList(int movieID) => _api
+  Future<List<MovieVO>?> getSimilarMovieList(int movieID) => _api
       .getSimilarMovie(kApiKey, movieID)
       .asStream()
       .map((event) => event.results)
       .first;
 
   @override
-  Future<List<ProductionCompaniesVO>?> getProductionCompanyVO(int movieID) =>
+  Future<List<ProductionCompaniesVO>?> getProductionCompanyList(int movieID) =>
       _api
           .getMovieDetailsResponse(kApiKey, movieID)
           .asStream()
@@ -95,5 +94,12 @@ class MovieDataAgentImpl extends MovieDataAgent {
       .getGenre(kApiKey, movieID)
       .asStream()
       .map((event) => event.genres)
+      .first;
+
+  @override
+  Future<List<MovieVO>?> getSearchMovieList(String movieName) => _api
+      .getSearchMovie(kApiKey, movieName)
+      .asStream()
+      .map((event) => event.results)
       .first;
 }

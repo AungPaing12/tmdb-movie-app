@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/constant/colors.dart';
-import 'package:movie_app/data/model/movie_model/movie_model.dart';
-import 'package:movie_app/data/model/movie_model/movie_model_impl.dart';
 import 'package:movie_app/widgets/easy_text.dart';
 import 'package:movie_app/widgets/text_rating_votes_on_image.dart';
 import '../constant/api_constant.dart';
@@ -11,34 +9,27 @@ import '../constant/strings.dart';
 import '../data/vos/cast_vo/cast_vo.dart';
 import '../data/vos/crew_vo/crew_vo.dart';
 import '../data/vos/genres_vo/genres_vo.dart';
-import '../data/vos/popular_movies_result_vo/popular_movie_result_vo.dart';
-import '../data/vos/production_companies_vo/production_companies_vo.dart';
+import '../data/vos/movie_vo/result_vo.dart';
 import '../network/response/movie_details_response/movie_details_response.dart';
 import 'list_tile.dart';
 
-MovieModel _movieModel = MovieModelImpl();
 
 class AboutMovieAndRecommendMovie extends StatelessWidget {
   const AboutMovieAndRecommendMovie({
     Key? key,
     required this.castVO,
     required this.crewVO,
-    required this.productionCompanyVO,
     required this.similarMovieVO,
     required this.movieDetailsResponse,
-    required this.genresVO,
   }) : super(key: key);
 
   final List<CastVO>? castVO;
   final List<CrewVO>? crewVO;
-  final List<ProductionCompaniesVO>? productionCompanyVO;
-  final List<PopularMovieResultsVO>? similarMovieVO;
+  final List<MovieVO>? similarMovieVO;
   final MovieDetailsResponse? movieDetailsResponse;
-  final List<GenresVO>? genresVO;
 
   @override
   Widget build(BuildContext context) {
-    print('Production Company VO ==========>$productionCompanyVO');
     return Scaffold(
       backgroundColor: kBlackColor,
       body: NestedScrollView(
@@ -89,24 +80,26 @@ class AboutMovieAndRecommendMovie extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 50),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: SizedBox(
-                              width: 250,
-                              height: 20,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: genresVO?.length,
-                                itemBuilder: (context, index) {
-                                  return MovieGenre(
-                                    text: genresVO?[index].name ?? '',
-                                  );
-                                },
-                              )),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: (movieDetailsResponse?.genres ?? [])
+                                  .map((e) => EasyText(
+                                        text: "${e.name} |",
+                                        fontSize: 12,
+                                        color: kWhiteColor,
+                                      ))
+                                  .toList(),
+                            ),
+                            RunTime(
+                              runTime: movieDetailsResponse?.runtime ?? 0,
+                            ),
+                          ],
                         ),
-                      ),
+                      )
                     ],
                   ))),
         ],
@@ -213,12 +206,9 @@ class AboutMovieAndRecommendMovie extends StatelessWidget {
                       ))),
               SizedBox(
                 height: 100,
-                child: (productionCompanyVO == null ||
-                        (productionCompanyVO?.isEmpty ?? true))
-                    ? const CircularProgressIndicator()
-                    : ListView.builder(
+                child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: productionCompanyVO?.length,
+                        itemCount: movieDetailsResponse?.productionCompanies?.length,
                         itemBuilder: (context, index) {
                           ///return ကျန်ခဲ့မှတော့ data တွေက ဘယ်ပေါ်မတုံး
                           // ဒါမျိုးက မဖြစ်သင့်တဲ့ အမှားနော်
@@ -227,9 +217,9 @@ class AboutMovieAndRecommendMovie extends StatelessWidget {
                           return Padding(
                             padding: const EdgeInsets.all(kSP15x),
                             child: ProductionCompanyViewItem(
-                              text: productionCompanyVO?[index].name ?? '',
+                              text: movieDetailsResponse?.productionCompanies?[index].name ?? '',
                               imageURL:
-                                  productionCompanyVO?[index].logoPath ?? '',
+                                  movieDetailsResponse?.productionCompanies?[index].logoPath ?? '',
                             ),
                           );
                         },
@@ -293,7 +283,7 @@ class ProductionCompanyViewItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 40,
+          width: 100,
           height: 40,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
@@ -320,23 +310,6 @@ class ProductionCompanyViewItem extends StatelessWidget {
   }
 }
 
-class MovieGenre extends StatelessWidget {
-  const MovieGenre({
-    Key? key,
-    required this.text,
-  }) : super(key: key);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return EasyText(
-      text: '$text | ',
-      color: kWhiteColor,
-      fontWeight: FontWeight.w400,
-      fontSize: 14,
-    );
-  }
-}
 
 class RunTime extends StatelessWidget {
   const RunTime({Key? key, required this.runTime}) : super(key: key);
@@ -344,11 +317,21 @@ class RunTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EasyText(
-      text: "$runTime",
-      color: kWhiteColor,
-      fontWeight: FontWeight.w400,
-      fontSize: 14,
+    return Row(
+      children: [
+        EasyText(
+          text: " ${runTime ~/ 60}hr ",
+          color: kWhiteColor,
+          fontWeight: FontWeight.w400,
+          fontSize: 12,
+        ),
+        EasyText(
+          text: "${runTime % 60}min",
+          color: kWhiteColor,
+          fontWeight: FontWeight.w400,
+          fontSize: 12,
+        ),
+      ],
     );
   }
 }

@@ -10,33 +10,31 @@ import '../constant/dimens.dart';
 import '../data/vos/actor_vo/actor_result_vo.dart';
 import '../page/actor_detail.dart';
 
+class ActorViewItem extends StatefulWidget {
+  const ActorViewItem({Key? key,}) : super(key: key);
+  @override
+  State<ActorViewItem> createState() => _ActorViewItemState();
+}
 
+class _ActorViewItemState extends State<ActorViewItem> {
+  final MovieModel _movieModel = MovieModelImpl();
+  List<ActorResultsVO> actorList = [];
+  @override
+  void initState() {
+    _movieModel.getActorList();
+    _movieModel.getActorListFromDatabase().listen((event) {
+      if(mounted){
+        setState(() {
+          actorList = event ?? [];
+        });
+      }
+    });
 
-final MovieModel _movieModel = MovieModelImpl();
-
-class ActorViewItem extends StatelessWidget {
-  const ActorViewItem({Key? key}) : super(key: key);
-
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<ActorResultsVO>?>(
-        future: _movieModel.getActorList(),
-        builder: (context, snapShot) {
-          if (snapShot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapShot.hasError) {
-            return const Center(
-              child: Text("Error Fetching"),
-            );
-          }
-          final listActor = snapShot.data;
-          return Actor(
-            actorResultsVO: listActor,
-          );
-        });
+    return Actor(actorResultsVO: actorList,);
   }
 }
 

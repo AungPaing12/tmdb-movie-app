@@ -8,9 +8,6 @@ part of 'movie_response.dart';
 
 MovieResponse _$MovieResponseFromJson(Map<String, dynamic> json) =>
     MovieResponse(
-      dates: json['dates'] == null
-          ? null
-          : DatesVO.fromJson(json['dates'] as Map<String, dynamic>),
       page: json['page'] as int?,
       results: (json['results'] as List<dynamic>?)
           ?.map((e) => MovieVO.fromJson(e as Map<String, dynamic>))
@@ -21,7 +18,6 @@ MovieResponse _$MovieResponseFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$MovieResponseToJson(MovieResponse instance) =>
     <String, dynamic>{
-      'dates': instance.dates,
       'page': instance.page,
       'results': instance.results,
       'total_pages': instance.totalPages,

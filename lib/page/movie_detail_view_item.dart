@@ -6,8 +6,7 @@ import 'package:movie_app/network/response/movie_details_response/movie_details_
 import '../data/vos/cast_vo/cast_vo.dart';
 import '../data/vos/crew_vo/crew_vo.dart';
 import '../data/vos/genres_vo/genres_vo.dart';
-import '../data/vos/popular_movies_result_vo/popular_movie_result_vo.dart';
-import '../data/vos/production_companies_vo/production_companies_vo.dart';
+import '../data/vos/movie_vo/result_vo.dart';
 import '../widgets/movie_details_widget.dart';
 
 class MovieDetailViewItem extends StatefulWidget {
@@ -24,43 +23,41 @@ class _MovieDetailViewItemState extends State<MovieDetailViewItem> {
   MovieDetailsResponse? movieDetailsResponse;
   List<CastVO>? castVO;
   List<CrewVO>? crewVO;
-  List<PopularMovieResultsVO>? similarMovieVo;
-  List<ProductionCompaniesVO>? productionCompanyVO;
-  List<GenresVO>? genreVO;
+  List<MovieVO>? similarMovieVo;
 
   @override
   void initState() {
-    _movieModel.getMovieDetails(widget.movieID).then((movieDetail) {
-      setState(() {
-        movieDetailsResponse = movieDetail;
-      });
+    _movieModel.getMovieDetails(widget.movieID);
+    _movieModel.getMovieDetailsFromDatabase(widget.movieID).listen((event) {
+      if (mounted) {
+        setState(() {
+          movieDetailsResponse = event;
+        });
+      }
     });
-    _movieModel.getSimilarMovieList(widget.movieID).then((similarMovie) {
-      setState(() {
-        similarMovieVo = similarMovie;
-      });
+    _movieModel.getSimilarMovieList(widget.movieID);
+    _movieModel.getSimilarMovieListFromDataBase(widget.movieID).listen((event) {
+      if (mounted) {
+        setState(() {
+          similarMovieVo = event;
+        });
+      }
     });
-    _movieModel.getCrew(widget.movieID).then((crew) {
-      setState(() {
-        crewVO = crew;
-      });
+    _movieModel.getCrew(widget.movieID);
+    _movieModel.getCrewListFromDataBase(widget.movieID).listen((event) {
+      if (mounted) {
+        setState(() {
+          crewVO = event;
+        });
+      }
     });
-    _movieModel.getCast(widget.movieID).then((cast) {
-      setState(() {
-        castVO = cast;
-      });
-    });
-    _movieModel
-        .getProductionCompanyList(widget.movieID)
-        .then((productionCompany) {
-      setState(() {
-        productionCompanyVO = productionCompany;
-      });
-    });
-    _movieModel.getGenre(widget.movieID).then((genre) {
-      setState(() {
-        genreVO = genre;
-      });
+    _movieModel.getCast(widget.movieID);
+    _movieModel.getCastListFromDataBase(widget.movieID).listen((event) {
+      if (mounted) {
+        setState(() {
+          castVO = event;
+        });
+      }
     });
 
     super.initState();
@@ -70,51 +67,40 @@ class _MovieDetailViewItemState extends State<MovieDetailViewItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBlackColor,
-      body: (movieDetailsResponse == null &&
-          similarMovieVo == null &&
-          castVO == null &&
-          crewVO == null &&
-          productionCompanyVO == null)
+      body: (similarMovieVo == null && castVO == null && crewVO == null)
           ? const Center(
-        child: CircularProgressIndicator(),
-      )
+              child: CircularProgressIndicator(),
+            )
           : MovieDetail(
-        movieDetailsResponse: movieDetailsResponse,
-        castVO: castVO,
-        crewVO: crewVO,
-        similarMovieVO: similarMovieVo,
-        productionCompanyVO: productionCompanyVO,
-        genreVO: genreVO,
-      ),
+              movieDetailsResponse: movieDetailsResponse,
+              castVO: castVO,
+              crewVO: crewVO,
+              similarMovieVO: similarMovieVo,
+            ),
     );
   }
 }
 
 class MovieDetail extends StatelessWidget {
-  const MovieDetail({Key? key,
+  const MovieDetail({
+    Key? key,
     required this.movieDetailsResponse,
     required this.similarMovieVO,
     required this.castVO,
     required this.crewVO,
-    required this.productionCompanyVO, required this.genreVO})
-      : super(key: key);
+  }) : super(key: key);
   final MovieDetailsResponse? movieDetailsResponse;
-  final List<PopularMovieResultsVO>? similarMovieVO;
+  final List<MovieVO>? similarMovieVO;
   final List<CastVO>? castVO;
   final List<CrewVO>? crewVO;
-  final List<ProductionCompaniesVO>? productionCompanyVO;
-  final List<GenresVO>? genreVO;
 
   @override
   Widget build(BuildContext context) {
-
     return AboutMovieAndRecommendMovie(
-        castVO: castVO,
-        crewVO: crewVO,
-        productionCompanyVO: productionCompanyVO,
-        similarMovieVO: similarMovieVO,
-        movieDetailsResponse: movieDetailsResponse,
-        genresVO: genreVO
+      castVO: castVO,
+      crewVO: crewVO,
+      similarMovieVO: similarMovieVO,
+      movieDetailsResponse: movieDetailsResponse,
     );
   }
 }
