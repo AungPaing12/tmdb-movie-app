@@ -3,6 +3,8 @@ import 'package:movie_app/data/vos/crew_vo/crew_vo.dart';
 import 'package:movie_app/persistent/crew_dao/crew_dao.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../data/vos/crew_hive_vo/crew_hive_vo.dart';
+
 class CrewDaoImpl extends CrewDao {
   CrewDaoImpl._();
 
@@ -11,19 +13,17 @@ class CrewDaoImpl extends CrewDao {
   factory CrewDaoImpl() => _singleton;
 
   @override
-  List<CrewVO>? getCrewListFromDataBase(int movieID) => _crewBox().values.toList();
+  CrewHiveVO? getCrewListFromDataBase(int movieID) => _crewBox().get(movieID);
 
   @override
-  Stream<List<CrewVO>?> getCrewListFromDataBaseStream(int movieID) =>
+  Stream<CrewHiveVO?> getCrewListFromDataBaseStream(int movieID) =>
       Stream.value(getCrewListFromDataBase(movieID));
 
-  Box<CrewVO> _crewBox() => Hive.box<CrewVO>(kBoxNameForCrewVO);
+  Box<CrewHiveVO> _crewBox() => Hive.box<CrewHiveVO>(kBoxNameForCrewHiveVO);
 
   @override
-  save(List<CrewVO> crewList) {
-   for(CrewVO crewVO in crewList){
-     _crewBox().put(crewVO.id, crewVO);
-   }
+  save(CrewHiveVO crewList,int movieID) {
+    _crewBox().put(movieID, crewList);
   }
 
   @override

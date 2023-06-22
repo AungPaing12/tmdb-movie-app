@@ -1,4 +1,6 @@
+import 'package:movie_app/data/vos/cast_hive_vo/cast_hive_vo.dart';
 import 'package:movie_app/data/vos/cast_vo/cast_vo.dart';
+import 'package:movie_app/data/vos/crew_hive_vo/crew_hive_vo.dart';
 import 'package:movie_app/data/vos/crew_vo/crew_vo.dart';
 import 'package:movie_app/network/response/actor_detail_response/actor_detail_response.dart';
 import 'package:movie_app/persistent/actor_dao/actor_dao.dart';
@@ -19,9 +21,12 @@ import '../../../network/data_agent/movie_data_agent/movie_data_agent.dart';
 import '../../../network/data_agent/movie_data_agent/movie_data_agent_impl.dart';
 import '../../../network/response/movie_details_response/movie_details_response.dart';
 import '../../../persistent/movie_detail_dao/movie_detail_dao.dart';
+import '../../../persistent/recommened_movie_dao/recommended_movie_dao.dart';
+import '../../../persistent/recommened_movie_dao/recommened_movie_dao_impl.dart';
 import '../../vos/actor_vo/actor_result_vo.dart';
 import '../../vos/movie_genres_vo/movie_genres_vo.dart';
 import '../../vos/movie_vo/result_vo.dart';
+import '../../vos/recommend_movie_hive_vo/movie_hive_vo.dart';
 import 'movie_model.dart';
 
 class MovieModelImpl extends MovieModel {
@@ -38,13 +43,13 @@ class MovieModelImpl extends MovieModel {
   final MovieDAO _movieDAO = MovieDAOImpl();
   final CastDao _castDao = CastDaoImpl();
   final CrewDao _crewDao = CrewDaoImpl();
-
+  final RecommenedMovieDao _recommenedMovieDao = RecommenedMovieDaoImpl();
   final MovieDetailDao _movieDetailDao = MovieDetailDaoImpl();
 
   @override
   Future<MovieDetailsResponse?> getMovieDetails(int movieID) =>
       _movieDataAgent.getMovieDetails(movieID).then((value) {
-        if(value != null){
+        if (value != null) {
           _movieDetailDao.save(value);
         }
         return value;
@@ -128,7 +133,8 @@ class MovieModelImpl extends MovieModel {
   Future<List<CastVO>?> getCast(int movieID) =>
       _movieDataAgent.getCast(movieID).then((value) {
         if (value != null) {
-          _castDao.save(value);
+          CastHiveVO castHiveVO = CastHiveVO(value);
+          _castDao.save(castHiveVO, movieID);
         }
         return value;
       });
@@ -137,7 +143,8 @@ class MovieModelImpl extends MovieModel {
   Future<List<CrewVO>?> getCrew(int movieID) =>
       _movieDataAgent.getCrew(movieID).then((value) {
         if (value != null) {
-          _crewDao.save(value);
+          CrewHiveVO crewHiveVO = CrewHiveVO(value);
+          _crewDao.save(crewHiveVO, movieID);
         }
         return value;
       });
@@ -146,11 +153,11 @@ class MovieModelImpl extends MovieModel {
   Future<List<MovieVO>?> getSimilarMovieList(int movieID) =>
       _movieDataAgent.getSimilarMovieList(movieID).then((value) {
         if (value != null) {
-          _movieDAO.save(value);
+          MovieHiveVO movieHiveVO = MovieHiveVO(value);
+          _recommenedMovieDao.save(movieHiveVO, movieID);
         }
         return value;
       });
-
 
   @override
   Stream<List<MovieGenresVO>?> getMovieGenreListFromDataBase() => _movieGenreDAO
@@ -163,7 +170,7 @@ class MovieModelImpl extends MovieModel {
       _actorDetailDao
           .watchActorDetailBox()
           .startWith(
-          _actorDetailDao.getActorDetailListFromDataBaseStream(actorID))
+              _actorDetailDao.getActorDetailListFromDataBaseStream(actorID))
           .map((event) =>
               _actorDetailDao.getActorDetailListFromDataBase(actorID));
 
@@ -192,34 +199,34 @@ class MovieModelImpl extends MovieModel {
       .map((event) => _movieDAO.getTopRatedListFromDataBase());
 
   @override
-  Stream<List<CastVO>?> getCastListFromDataBase(int movieID) => _castDao
+  Stream<CastHiveVO?> getCastListFromDataBase(int movieID) => _castDao
       .watchCastBox()
       .startWith(_castDao.getCastListFromDataBaseStream(movieID))
       .map((event) => _castDao.getCastListFromDataBase(movieID));
 
   @override
-  Stream<List<CrewVO>?> getCrewListFromDataBase(int movieID) => _crewDao
+  Stream<CrewHiveVO?> getCrewListFromDataBase(int movieID) => _crewDao
       .watchCrewBox()
       .startWith(_crewDao.getCrewListFromDataBaseStream(movieID))
       .map((event) => _crewDao.getCrewListFromDataBase(movieID));
 
   @override
-  Stream<List<MovieVO>?> getSimilarMovieListFromDataBase(int movieID) =>
-      _movieDAO
+  Stream<MovieHiveVO?> getSimilarMovieListFromDataBase(int movieID) =>
+      _recommenedMovieDao
           .watchMovieBox()
-          .startWith(_movieDAO.getSimilarMovieListFromDataBaseStream())
-          .map((event) => _movieDAO.getSimilarMovieListFromDataBase());
-
+          .startWith(_recommenedMovieDao.getCrewListFromDataBaseStream(movieID))
+          .map((event) => _recommenedMovieDao.getCrewListFromDataBase(movieID));
 
   @override
   Stream<MovieDetailsResponse?> getMovieDetailsFromDatabase(int movieID) =>
       _movieDetailDao
           .watchActorDetailBox()
           .startWith(
-          _movieDetailDao.getMovieDetailListFromDataBaseStream(movieID))
+              _movieDetailDao.getMovieDetailListFromDataBaseStream(movieID))
           .map((event) =>
               _movieDetailDao.getMovieDetailListFromDataBase(movieID));
 
   @override
-  Future<List<MovieVO>?> getSearchMovie(String movieName) => _movieDataAgent.getSearchMovieList(movieName);
+  Future<List<MovieVO>?> getSearchMovie(String movieName) =>
+      _movieDataAgent.getSearchMovieList(movieName);
 }

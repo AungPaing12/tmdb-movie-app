@@ -1,43 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_app/data/model/movie_model/movie_model.dart';
-import 'package:movie_app/data/model/movie_model/movie_model_impl.dart';
 import 'package:movie_app/widgets/easy_text.dart';
-
 import '../constant/api_constant.dart';
 import '../constant/dimens.dart';
 import '../data/vos/actor_vo/actor_result_vo.dart';
 import '../page/actor_detail.dart';
-
-class ActorViewItem extends StatefulWidget {
-  const ActorViewItem({Key? key,}) : super(key: key);
-  @override
-  State<ActorViewItem> createState() => _ActorViewItemState();
-}
-
-class _ActorViewItemState extends State<ActorViewItem> {
-  final MovieModel _movieModel = MovieModelImpl();
-  List<ActorResultsVO> actorList = [];
-  @override
-  void initState() {
-    _movieModel.getActorList();
-    _movieModel.getActorListFromDatabase().listen((event) {
-      if(mounted){
-        setState(() {
-          actorList = event ?? [];
-        });
-      }
-    });
-
-    super.initState();
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Actor(actorResultsVO: actorList,);
-  }
-}
-
 
 class Actor extends StatelessWidget {
   const Actor({Key? key, required this.actorResultsVO}) : super(key: key);
@@ -74,8 +42,9 @@ class Actor extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                                ActorDetailViewItem(actorID: actor.id ?? 0,)));
+                          builder: (context) => ActorDetailViewItem(
+                                actorID: actor.id ?? 0,
+                              )));
                     },
                     child: CachedNetworkImage(
                       imageUrl: '$kPrefixEndPoint${actor.profilePath ?? ''}',
@@ -83,17 +52,23 @@ class Actor extends StatelessWidget {
                       placeholder: (context, url) => Center(
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
-                              child:
-                                  Image.asset('images/tmdb_place_holder.png'))),
+                              child: Image.asset(
+                                  'images/tmdb_place_holder.png'))),
                       errorWidget: (context, url, error) =>
                           const Center(child: Icon(Icons.error)),
                     ),
                   ),
                 ),
               ),
-              Padding(padding: const EdgeInsets.only(bottom: 25),
-                child: Align(alignment: Alignment.bottomCenter,
-                    child: EasyText(text: actor.name ?? '',fontWeight: FontWeight.w600,fontSize: 20,)),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 25),
+                child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: EasyText(
+                      text: actor.name ?? '',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                    )),
               ),
               Positioned.fill(
                 top: 150,
@@ -117,4 +92,3 @@ class Actor extends StatelessWidget {
     );
   }
 }
-

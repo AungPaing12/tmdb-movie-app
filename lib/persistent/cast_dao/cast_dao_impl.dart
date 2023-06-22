@@ -1,7 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movie_app/constant/hive_constant.dart';
-import 'package:movie_app/data/vos/cast_vo/cast_vo.dart';
-
+import '../../data/vos/cast_hive_vo/cast_hive_vo.dart';
 import 'cast_dao.dart';
 
 class CastDaoImpl extends CastDao {
@@ -12,21 +11,23 @@ class CastDaoImpl extends CastDao {
   factory CastDaoImpl() => _singleton;
 
   @override
-  List<CastVO>? getCastListFromDataBase(int movieID) => _castBox().values.toList();
+  CastHiveVO? getCastListFromDataBase(int movieID) => _castBox().get(movieID);
 
   @override
-  Stream<List<CastVO>?> getCastListFromDataBaseStream(int movieID) =>
+  Stream<CastHiveVO?> getCastListFromDataBaseStream(int movieID) =>
       Stream.value(getCastListFromDataBase(movieID));
 
-  Box<CastVO> _castBox() => Hive.box<CastVO>(kBoxNameForCastVO);
+  Box<CastHiveVO> _castBox() => Hive.box<CastHiveVO>(kBoxNameForCastHiveVO);
 
-  @override
-  save(List<CastVO> castList) {
-    for (CastVO castVO in castList) {
-      _castBox().put(castVO.id, castVO);
-    }
-  }
+
 
   @override
   Stream watchCastBox() => _castBox().watch();
+
+  @override
+  void save(CastHiveVO castList, id) {
+  _castBox().put(id, castList);
+  }
+
+
 }

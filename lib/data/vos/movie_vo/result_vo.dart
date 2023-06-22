@@ -95,6 +95,13 @@ class MovieVO {
   factory MovieVO.fromJson(Map<String, dynamic> json) =>
       _$MovieVOFromJson(json);
 
+  String getReleaseData() {
+    if (releaseDate?.isNotEmpty ?? false) {
+      DateTime dateTime = DateTime.parse(releaseDate ?? "");
+      return dateTime.year.toString();
+    }
+    return "N/A";
+  }
   @override
   String toString() {
     return 'MovieVO{adult: $adult, backdropPath: $backdropPath, genreIds: $genreIds, id: $id, originalLanguage: $originalLanguage, originalTitle: $originalTitle, overview: $overview, popularity: $popularity, posterPath: $posterPath, releaseDate: $releaseDate, title: $title, video: $video, voteAverage: $voteAverage, voteCount: $voteCount, isGetNowPlaying: $isGetNowPlaying, isPopularMovie: $isPopularMovie, isTopRated: $isTopRated}';

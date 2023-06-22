@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/constant/colors.dart';
-import 'package:movie_app/widgets/actors_widget.dart';
-
 import '../constant/api_constant.dart';
 import 'easy_text.dart';
 
@@ -35,12 +33,11 @@ class ListTileItemView extends StatelessWidget {
               child: CachedNetworkImage(
                 width: 50,
                 height: 50,
-                imageUrl:
-                kPrefixEndPoint+imageURL,
+                imageUrl: kPrefixEndPoint + imageURL,
                 placeholder: (context, url) =>
                     Image.asset('images/tmdb_place_holder.png'),
                 errorWidget: (context, url, error) =>
-                const Center(child: Icon(Icons.error)),
+                    const Center(child: Icon(Icons.error)),
               ),
             ),
           ),

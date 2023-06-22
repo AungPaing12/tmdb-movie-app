@@ -1,11 +1,11 @@
-import '../../data/vos/crew_vo/crew_vo.dart';
+import 'package:movie_app/data/vos/crew_hive_vo/crew_hive_vo.dart';
 
 abstract class CrewDao {
-  void save(List<CrewVO> crewList);
+  void save(CrewHiveVO crewList, int movieID);
 
-  List<CrewVO>? getCrewListFromDataBase(int movieID);
+  CrewHiveVO? getCrewListFromDataBase(int movieID);
 
-  Stream<List<CrewVO>?> getCrewListFromDataBaseStream(int movieID);
+  Stream<CrewHiveVO?> getCrewListFromDataBaseStream(int movieID);
 
   Stream  watchCrewBox();
 

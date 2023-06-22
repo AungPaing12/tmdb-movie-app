@@ -1,31 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/constant/colors.dart';
+import 'package:movie_app/data/vos/cast_hive_vo/cast_hive_vo.dart';
+import 'package:movie_app/data/vos/crew_hive_vo/crew_hive_vo.dart';
+import 'package:movie_app/data/vos/recommend_movie_hive_vo/movie_hive_vo.dart';
 import 'package:movie_app/widgets/easy_text.dart';
 import 'package:movie_app/widgets/text_rating_votes_on_image.dart';
 import '../constant/api_constant.dart';
 import '../constant/dimens.dart';
 import '../constant/strings.dart';
-import '../data/vos/cast_vo/cast_vo.dart';
-import '../data/vos/crew_vo/crew_vo.dart';
-import '../data/vos/genres_vo/genres_vo.dart';
-import '../data/vos/movie_vo/result_vo.dart';
 import '../network/response/movie_details_response/movie_details_response.dart';
 import 'list_tile.dart';
-
 
 class AboutMovieAndRecommendMovie extends StatelessWidget {
   const AboutMovieAndRecommendMovie({
     Key? key,
-    required this.castVO,
+    required this.castHiveVO,
     required this.crewVO,
     required this.similarMovieVO,
     required this.movieDetailsResponse,
   }) : super(key: key);
 
-  final List<CastVO>? castVO;
-  final List<CrewVO>? crewVO;
-  final List<MovieVO>? similarMovieVO;
+  final CastHiveVO? castHiveVO;
+  final CrewHiveVO? crewVO;
+  final MovieHiveVO? similarMovieVO;
   final MovieDetailsResponse? movieDetailsResponse;
 
   @override
@@ -143,16 +141,17 @@ class AboutMovieAndRecommendMovie extends StatelessWidget {
                 height: 40,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: castVO?.length,
+                  itemCount: castHiveVO?.castList?.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(left: 15),
                       child: ListTileItemView(
                         actors: '',
-                        actorsName: castVO?[index].name ?? '',
-                        imageURL: castVO?[index].profilePath ?? '',
+                        actorsName: castHiveVO?.castList?[index].name ?? '',
+                        imageURL:
+                            castHiveVO?.castList?[index].profilePath ?? '',
                         radius: 20,
-                        genderID: castVO?[index].gender ?? 0,
+                        genderID: castHiveVO?.castList?[index].gender ?? 0,
                       ),
                     );
                   },
@@ -175,14 +174,14 @@ class AboutMovieAndRecommendMovie extends StatelessWidget {
                 height: 40,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: crewVO?.length,
+                  itemCount: crewVO?.crewList?.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(left: 15),
                       child: ListTileItemView(
                         actors: kCrewText,
-                        actorsName: crewVO?[index].name ?? '',
-                        imageURL: crewVO?[index].profilePath ?? '',
+                        actorsName: crewVO?.crewList?[index].name ?? '',
+                        imageURL: crewVO?.crewList?[index].profilePath ?? '',
                         radius: 20,
                         genderID: 3,
                       ),
@@ -207,23 +206,26 @@ class AboutMovieAndRecommendMovie extends StatelessWidget {
               SizedBox(
                 height: 100,
                 child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: movieDetailsResponse?.productionCompanies?.length,
-                        itemBuilder: (context, index) {
-                          ///return ကျန်ခဲ့မှတော့ data တွေက ဘယ်ပေါ်မတုံး
-                          // ဒါမျိုးက မဖြစ်သင့်တဲ့ အမှားနော်
-                          // နောက်ဆို သတိထားပေးပါ
-                          // ဒီလိုအမှားမျိုးမဖြစ်သင့်ပါဘူး
-                          return Padding(
-                            padding: const EdgeInsets.all(kSP15x),
-                            child: ProductionCompanyViewItem(
-                              text: movieDetailsResponse?.productionCompanies?[index].name ?? '',
-                              imageURL:
-                                  movieDetailsResponse?.productionCompanies?[index].logoPath ?? '',
-                            ),
-                          );
-                        },
+                  scrollDirection: Axis.horizontal,
+                  itemCount: movieDetailsResponse?.productionCompanies?.length,
+                  itemBuilder: (context, index) {
+                    ///return ကျန်ခဲ့မှတော့ data တွေက ဘယ်ပေါ်မတုံး
+                    // ဒါမျိုးက မဖြစ်သင့်တဲ့ အမှားနော်
+                    // နောက်ဆို သတိထားပေးပါ
+                    // ဒီလိုအမှားမျိုးမဖြစ်သင့်ပါဘူး
+                    return Padding(
+                      padding: const EdgeInsets.all(kSP15x),
+                      child: ProductionCompanyViewItem(
+                        text: movieDetailsResponse
+                                ?.productionCompanies?[index].name ??
+                            '',
+                        imageURL: movieDetailsResponse
+                                ?.productionCompanies?[index].logoPath ??
+                            '',
                       ),
+                    );
+                  },
+                ),
               ),
               const SizedBox(
                 height: kSP20x,
@@ -246,15 +248,21 @@ class AboutMovieAndRecommendMovie extends StatelessWidget {
                     height: kRecommendedMoviesSizeHeight,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: similarMovieVO?.length,
+                      itemCount: similarMovieVO?.movieList?.length,
                       itemBuilder: (context, index) {
                         return TextRatingVotesOnImages(
-                          movieName: similarMovieVO?[index].title ?? '',
-                          rating: similarMovieVO?[index].voteAverage ?? 0,
-                          votes: similarMovieVO?[index].voteCount ?? 0,
-                          imageURL: similarMovieVO?[index].posterPath ?? '',
+                          movieName:
+                              similarMovieVO?.movieList?[index].title ?? '',
+                          rating:
+                              similarMovieVO?.movieList?[index].voteAverage ??
+                                  0,
+                          votes:
+                              similarMovieVO?.movieList?[index].voteCount ?? 0,
+                          imageURL:
+                              similarMovieVO?.movieList?[index].posterPath ??
+                                  '',
                           positionFillTop1: 140,
-                          movieID: similarMovieVO?[index].id ?? 0,
+                          movieID: similarMovieVO?.movieList?[index].id ?? 0,
                         );
                       },
                     ),
@@ -309,7 +317,6 @@ class ProductionCompanyViewItem extends StatelessWidget {
     );
   }
 }
-
 
 class RunTime extends StatelessWidget {
   const RunTime({Key? key, required this.runTime}) : super(key: key);

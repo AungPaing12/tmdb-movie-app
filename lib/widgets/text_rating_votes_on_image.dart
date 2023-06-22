@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/constant/colors.dart';
-import 'package:movie_app/data/vos/movie_vo/result_vo.dart';
 import 'package:movie_app/widgets/easy_text.dart';
 
 import '../constant/api_constant.dart';
@@ -15,7 +14,7 @@ class TextRatingVotesOnImages extends StatelessWidget {
       required this.rating,
       required this.votes,
       required this.positionFillTop1,
-       required this.movieID})
+      required this.movieID})
       : super(key: key);
   final String imageURL;
   final String movieName;
