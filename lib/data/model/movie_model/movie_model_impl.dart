@@ -70,15 +70,16 @@ class MovieModelImpl extends MovieModel {
       });
 
   @override
-  Future<List<MovieVO>?> getNowPlayingList() =>
-      _movieDataAgent.getMoviesList().then((value) {
+  Future<List<MovieVO>?> getMovieByGenresList(int genresID, int page) =>
+      _movieDataAgent.getMoviesByGenresList(genresID, page).then((value) {
         if (value != null) {
           var temp = value;
           temp = temp.map((e) {
             e.isGetNowPlaying = true;
             return e;
           }).toList();
-          _movieDAO.save(value);
+          MovieHiveVO movieHiveVO = MovieHiveVO(value);
+          _recommenedMovieDao.save(movieHiveVO, genresID);
         }
         return value;
       });
@@ -93,8 +94,8 @@ class MovieModelImpl extends MovieModel {
       });
 
   @override
-  Future<List<MovieVO>?> getTopRatedMovieList() =>
-      _movieDataAgent.getTopRatedMovie().then((value) {
+  Future<List<MovieVO>?> getTopRatedMovieList(int page) =>
+      _movieDataAgent.getTopRatedMovie(page).then((value) {
         if (value != null) {
           var temp = value;
           temp = temp.map((e) {
@@ -116,8 +117,8 @@ class MovieModelImpl extends MovieModel {
       });
 
   @override
-  Future<List<MovieVO>?> getPopularMovieList() =>
-      _movieDataAgent.getPopularMovieList().then((value) {
+  Future<List<MovieVO>?> getPopularMovieList(int page) =>
+      _movieDataAgent.getPopularMovieList(page).then((value) {
         if (value != null) {
           var temp = value;
           temp = temp.map((e) {
@@ -181,10 +182,13 @@ class MovieModelImpl extends MovieModel {
       .map((event) => _actorDao.getActorListFromDataBase());
 
   @override
-  Stream<List<MovieVO>?> getNowPlayingListFromDataBase() => _movieDAO
-      .watchMovieBox()
-      .startWith(_movieDAO.getNowPlayingListFromDataBaseStream())
-      .map((event) => _movieDAO.getNowPlayingListFromDataBase());
+  Stream<MovieHiveVO?> getMovieByGenresListFromDataBase(int genreID) =>
+      _recommenedMovieDao
+          .watchMovieBox()
+          .startWith(_recommenedMovieDao
+              .getMovieByGenresListFromDataBaseStream(genreID))
+          .map((event) =>
+              _recommenedMovieDao.getMovieByGenresListFromDataBase(genreID));
 
   @override
   Stream<List<MovieVO>?> getPopularMovieListFromDataBase() => _movieDAO
@@ -214,8 +218,10 @@ class MovieModelImpl extends MovieModel {
   Stream<MovieHiveVO?> getSimilarMovieListFromDataBase(int movieID) =>
       _recommenedMovieDao
           .watchMovieBox()
-          .startWith(_recommenedMovieDao.getCrewListFromDataBaseStream(movieID))
-          .map((event) => _recommenedMovieDao.getCrewListFromDataBase(movieID));
+          .startWith(
+              _recommenedMovieDao.getRecommenedMovieFromDataBaseStream(movieID))
+          .map((event) =>
+              _recommenedMovieDao.getRecommenedMovieListFromDataBase(movieID));
 
   @override
   Stream<MovieDetailsResponse?> getMovieDetailsFromDatabase(int movieID) =>

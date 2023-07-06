@@ -17,7 +17,7 @@ const double kSP125x = 125.0;
 const double kSp104x = 104.0;
 const double kSp90x = 90.0;
 const double kSp150x = 150.0;
-
+const double kSp130x = 130.0;
 ///App Specific
 const double kSearchIconSizeWidthHeight = 40.0;
 const double kSearchMovieSizeWidth = 250.0;

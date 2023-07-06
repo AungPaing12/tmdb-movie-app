@@ -49,10 +49,10 @@ void main() async {
   await Hive.openBox<CrewHiveVO>(kBoxNameForCrewHiveVO);
   await Hive.openBox<MovieHiveVO>(kBoxNameForMovieHiveVO);
   runApp(const MyApp());
-  _movieModel.getCast(502356);
-  _movieModel.getCastListFromDataBase(502356).listen((value) => print("Movie Lie==============>$value")).onError((onError){
-    print(onError);
-  });
+  // _movieModel.getPopularMovieList(1);
+  // _movieModel.getPopularMovieListFromDataBase().listen((value) => print("Movie List==============>$value")).onError((onError){
+  //   print(onError);
+  // });
 }
 
 class MyApp extends StatelessWidget {

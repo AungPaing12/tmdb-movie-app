@@ -3,8 +3,11 @@
 
 //End Point
 const kQueryParamsApiKey = 'api_key';
+const kQueryParamsPage = 'page';
 const kGenresEndPoint = '/genre/movie/list';
 const kQueryParams = 'query';
+const kQueryParamsWithGenresEndPoint = 'with_genres';
+
 ///MOVIE BASE URL
 const kMovieBaseURL = 'https://api.themoviedb.org/3';
 
@@ -19,6 +22,8 @@ const kGetActorDetailsEndPoint = '/person/{$kPathParameterMovieID}';
 const kGetCreditEndPoint = '/movie/{$kPathParameterMovieID}/credits';
 const kGetSimilarEndPoint = '/movie/{$kPathParameterMovieID}/similar';
 const kGetSearchMovieEndPoint = '/search/movie';
+const kGetMovieByGenreEndPoint = '/discover/movie';
+
 ///API KEY
 const kApiKey = '6ba57a8fa213613268b61de49d70fffe';
 

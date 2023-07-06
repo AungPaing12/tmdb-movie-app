@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
-
 import '../../../constant/api_constant.dart';
 import '../../response/actor_detail_response/actor_detail_response.dart';
 import '../../response/actor_response/actor_response.dart';
@@ -38,19 +37,23 @@ abstract class MovieAPI {
     @Query(kQueryParamsApiKey) String apiKey,
   );
 
-  @GET(kGetNowPlayingMoviesEndPoint)
-  Future<MovieResponse> getNowPlayingMovieResponse(
+  @GET(kGetMovieByGenreEndPoint)
+  Future<MovieResponse> getMovieByGenresResponse(
+    @Query(kQueryParamsWithGenresEndPoint) int genreID,
     @Query(kQueryParamsApiKey) String apiKey,
+    @Query(kQueryParamsPage) int pageNo,
   );
 
   @GET(kGetPopularMovieEndPoint)
   Future<PopularMovieResponse> getPopularMovie(
     @Query(kQueryParamsApiKey) String apiKey,
+    @Query(kQueryParamsPage) int pageNo,
   );
 
   @GET(kGetTopRatedEndPoint)
   Future<TopRatedResponse> getTopRated(
     @Query(kQueryParamsApiKey) String apiKey,
+    @Query(kQueryParamsPage) int pageNo,
   );
 
   @GET(kGetCreditEndPoint)
@@ -75,8 +78,7 @@ abstract class MovieAPI {
 
   @GET(kGetSearchMovieEndPoint)
   Future<SearchMovieResponse> getSearchMovie(
-      @Query(kQueryParamsApiKey) String apiKey,
-      @Query(kQueryParams) String movieName,
-      );
-
+    @Query(kQueryParamsApiKey) String apiKey,
+    @Query(kQueryParams) String movieName,
+  );
 }

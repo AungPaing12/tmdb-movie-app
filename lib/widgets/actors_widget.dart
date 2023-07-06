@@ -43,7 +43,7 @@ class Actor extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ActorDetailViewItem(
-                                actorID: actor.id ?? 0,
+                                actorID: actor.id ?? 0, knownForVO: actor.knownFor?? [],
                               )));
                     },
                     child: CachedNetworkImage(

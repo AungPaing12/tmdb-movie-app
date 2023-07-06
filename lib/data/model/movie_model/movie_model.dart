@@ -7,15 +7,14 @@ import '../../../network/response/movie_details_response/movie_details_response.
 import '../../vos/actor_vo/actor_result_vo.dart';
 import '../../vos/cast_vo/cast_vo.dart';
 import '../../vos/crew_vo/crew_vo.dart';
-import '../../vos/genres_vo/genres_vo.dart';
 import '../../vos/movie_genres_vo/movie_genres_vo.dart';
 import '../../vos/movie_vo/result_vo.dart';
-import '../../vos/production_companies_vo/production_companies_vo.dart';
+
 
 abstract class MovieModel {
-  Future<List<MovieVO>?> getNowPlayingList();
+  Future<List<MovieVO>?> getMovieByGenresList(int genresID,int page);
 
-  Stream<List<MovieVO>?> getNowPlayingListFromDataBase();
+  Stream<MovieHiveVO?> getMovieByGenresListFromDataBase(int genreID);
 
   Future<List<ActorResultsVO>?> getActorList();
 
@@ -33,11 +32,11 @@ abstract class MovieModel {
 
   Stream<List<MovieGenresVO>?> getMovieGenreListFromDataBase();
 
-  Future<List<MovieVO>?> getPopularMovieList();
+  Future<List<MovieVO>?> getPopularMovieList(int page);
 
   Stream<List<MovieVO>?> getPopularMovieListFromDataBase();
 
-  Future<List<MovieVO>?> getTopRatedMovieList();
+  Future<List<MovieVO>?> getTopRatedMovieList(int page);
 
   Stream<List<MovieVO>?> getTopRatedMovieListFromDataBase();
 

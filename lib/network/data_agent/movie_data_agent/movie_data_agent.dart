@@ -10,7 +10,7 @@ import '../../../data/vos/production_companies_vo/production_companies_vo.dart';
 import '../../response/movie_details_response/movie_details_response.dart';
 
 abstract class MovieDataAgent {
-  Future<List<MovieVO>?> getMoviesList();
+  Future<List<MovieVO>?> getMoviesByGenresList(int genresID,int page);
 
   Future<MovieDetailsResponse?> getMovieDetails(int movieID);
 
@@ -20,9 +20,9 @@ abstract class MovieDataAgent {
 
   Future<List<MovieGenresVO>?> getMovieGenresList();
 
-  Future<List<MovieVO>?> getPopularMovieList();
+  Future<List<MovieVO>?> getPopularMovieList(int page);
 
-  Future<List<MovieVO>?>  getTopRatedMovie();
+  Future<List<MovieVO>?>  getTopRatedMovie(int page);
 
   Future<List<CastVO>?> getCast(int movieID);
 

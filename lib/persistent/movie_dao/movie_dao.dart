@@ -9,10 +9,6 @@ abstract class MovieDAO {
 
   List<MovieVO>? getPopularListFromDataBase();
 
-  List<MovieVO>? getSimilarMovieListFromDataBase();
-
-  Stream<List<MovieVO>?> getSimilarMovieListFromDataBaseStream();
-
   Stream<List<MovieVO>?> getNowPlayingListFromDataBaseStream();
 
   Stream<List<MovieVO>?> getTopRatedListFromDataBaseStream();

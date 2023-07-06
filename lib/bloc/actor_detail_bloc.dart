@@ -7,18 +7,23 @@ class ActorDetailBloc extends ChangeNotifier {
   final MovieModel _movieModel = MovieModelImpl();
   ActorDetailResponseVO? _actorDetailList;
   bool _dispose = false;
+
   ActorDetailResponseVO? get getActorDetailList => _actorDetailList;
+
 
   ActorDetailBloc(int actorID) {
     _movieModel.getActorDetails(actorID);
+    _movieModel.getActorList();
+
     _movieModel.getActorDetailsFromDatabase(actorID).listen((event) {
-      if (event != null ) {
+      if (event != null) {
         _actorDetailList = event;
       } else if (event == null) {
         _actorDetailList = null;
       }
       notifyListeners();
     });
+
   }
 
   @override

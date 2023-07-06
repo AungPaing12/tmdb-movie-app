@@ -119,9 +119,17 @@ class _MovieAPI implements MovieAPI {
   }
 
   @override
-  Future<MovieResponse> getNowPlayingMovieResponse(String apiKey) async {
+  Future<MovieResponse> getMovieByGenresResponse(
+    int genreID,
+    String apiKey,
+    int pageNo,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'api_key': apiKey};
+    final queryParameters = <String, dynamic>{
+      r'with_genres': genreID,
+      r'api_key': apiKey,
+      r'page': pageNo,
+    };
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio
@@ -132,7 +140,7 @@ class _MovieAPI implements MovieAPI {
     )
             .compose(
               _dio.options,
-              '/movie/now_playing',
+              '/discover/movie',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -142,9 +150,15 @@ class _MovieAPI implements MovieAPI {
   }
 
   @override
-  Future<PopularMovieResponse> getPopularMovie(String apiKey) async {
+  Future<PopularMovieResponse> getPopularMovie(
+    String apiKey,
+    int pageNo,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'api_key': apiKey};
+    final queryParameters = <String, dynamic>{
+      r'api_key': apiKey,
+      r'page': pageNo,
+    };
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
@@ -165,9 +179,15 @@ class _MovieAPI implements MovieAPI {
   }
 
   @override
-  Future<TopRatedResponse> getTopRated(String apiKey) async {
+  Future<TopRatedResponse> getTopRated(
+    String apiKey,
+    int pageNo,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'api_key': apiKey};
+    final queryParameters = <String, dynamic>{
+      r'api_key': apiKey,
+      r'page': pageNo,
+    };
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio

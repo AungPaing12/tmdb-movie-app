@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/constant/dimens.dart';
+import 'package:movie_app/data/vos/recommend_movie_hive_vo/movie_hive_vo.dart';
 import 'package:movie_app/page/search_page.dart';
 import 'package:movie_app/widgets/easy_text.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,7 @@ class MovieTypeScrollItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<HomePageBloc, List<MovieGenresVO>?>(
-      shouldRebuild: (pre,next)=> pre != next,
+        shouldRebuild: (pre, next) => pre != next,
         selector: (_, bloc) => bloc.getGenreList,
         builder: (_, genreList, __) {
           if (genreList == null) {
@@ -93,6 +94,7 @@ class MovieTypeScrollItemView extends StatelessWidget {
             onTap: (genreList) {
               final instance = context.read<HomePageBloc>();
               instance.genreMovieIsSelected(genreList);
+              instance.getGenreID(genreList.id ?? 0);
             },
           );
         });
@@ -136,21 +138,16 @@ class CarouselSliderViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<HomePageBloc, List<MovieVO>?>(
+    return Selector<HomePageBloc, MovieHiveVO?>(
         selector: (_, bloc) => bloc.getNowPlayingMovieList,
         builder: (_, nowPlayingMovieList, __) {
           if (nowPlayingMovieList == null) {
-            return const Center(
-              child: EasyText(text: 'NoData'),
-            );
-          }
-          if (nowPlayingMovieList.isEmpty) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
           return FirstScrollImageWithPlayButtonViewItem(
-            movieVO: nowPlayingMovieList,
+            movieVO: nowPlayingMovieList.movieList,
           );
         });
   }
@@ -182,53 +179,56 @@ class FirstScrollImageWithPlayButtonViewItem extends StatelessWidget {
           enlargeFactor: 0.3,
           scrollDirection: Axis.horizontal,
         ),
-        items: movieVO?.map((movie) {
-          return Stack(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                margin: const EdgeInsets.symmetric(horizontal: kSP5x),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: CachedNetworkImage(
-                    imageUrl: '$kPrefixEndPoint${movie.posterPath ?? ''}',
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Center(
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child:
-                                Image.asset('images/tmdb_place_holder.png'))),
-                    errorWidget: (context, url, error) =>
-                        const Center(child: Icon(Icons.error)),
-                  ),
-                ),
-              ),
-              const Align(
-                alignment: Alignment.center,
-                child: CircleAvatar(
-                  radius: kSP20x,
-                  backgroundColor: kPinkAccentColor,
-                  child: Icon(Icons.play_arrow_outlined),
-                ),
-              ),
-              Positioned.fill(
-                top: kSP170x,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.6)
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+        items: movieVO
+            ?.map((movie) {
+              return Stack(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.symmetric(horizontal: kSP5x),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: CachedNetworkImage(
+                        imageUrl: '$kPrefixEndPoint${movie.posterPath ?? ''}',
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Center(
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(
+                                    'images/tmdb_place_holder.png'))),
+                        errorWidget: (context, url, error) =>
+                            const Center(child: Icon(Icons.error)),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ],
-          );
-        }).take(5).toList(),
+                  const Align(
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      radius: kSP20x,
+                      backgroundColor: kPinkAccentColor,
+                      child: Icon(Icons.play_arrow_outlined),
+                    ),
+                  ),
+                  Positioned.fill(
+                    top: kSP170x,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.6)
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            })
+            .take(5)
+            .toList(),
       ),
     );
   }
@@ -239,21 +239,16 @@ class SmallestMovieViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<HomePageBloc, List<MovieVO>?>(
+    return Selector<HomePageBloc, MovieHiveVO?>(
         selector: (_, bloc) => bloc.getMovieList,
         builder: (_, movieList, __) {
           if (movieList == null) {
-            return const Center(
-              child: EasyText(text: 'NoData'),
-            );
-          }
-          if (movieList.isEmpty) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
           return SmallestMoviesScrollViewItem(
-            movieVo: movieList,
+            movieVo: movieList.movieList,
           );
         });
   }
@@ -266,24 +261,28 @@ class SmallestMoviesScrollViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: kSP20x),
-      child: SizedBox(
-        width: kSmallestMoviesScrollSizeWidth,
-        height: kSmallestMoviesScrollSizeHeight,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: movieVo?.length,
-          itemBuilder: (context, index) {
-            return TextRatingVotesOnImages(
-              imageURL: movieVo?[index].posterPath ?? '',
-              movieName: movieVo?[index].title ?? '',
-              votes: movieVo?[index].voteCount ?? 0,
-              rating: movieVo?[index].voteAverage ?? 0,
-              positionFillTop1: 110,
-              movieID: movieVo?[index].id ?? 0,
-            );
-          },
+    return Selector<HomePageBloc, ScrollController>(
+      selector: (_, bloc) => bloc.getScrollControllerForMovieByGenres,
+      builder: (_, controller, __) => Padding(
+        padding: const EdgeInsets.only(top: kSP20x),
+        child: SizedBox(
+          width: kSmallestMoviesScrollSizeWidth,
+          height: kSmallestMoviesScrollSizeHeight,
+          child: ListView.builder(
+            controller: controller,
+            scrollDirection: Axis.horizontal,
+            itemCount: movieVo?.length,
+            itemBuilder: (context, index) {
+              return TextRatingVotesOnImages(
+                imageURL: movieVo?[index].posterPath ?? '',
+                movieName: movieVo?[index].title ?? '',
+                votes: movieVo?[index].voteCount ?? 0,
+                rating: movieVo?[index].voteAverage ?? 0,
+                positionFillTop1: 110,
+                movieID: movieVo?[index].id ?? 0,
+              );
+            },
+          ),
         ),
       ),
     );
@@ -322,37 +321,41 @@ class YouMayLikeMovieViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(left: kSP20x),
-          child: Align(
-              alignment: Alignment.topLeft,
-              child: EasyText(
-                text: kYouMaylikeText,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              )),
-        ),
-        SizedBox(
-          width: kYouMayLikeMovieSizeWidth,
-          height: kYouMayLikeMovieSizeHeight,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: topRated?.length,
-            itemBuilder: (context, index) {
-              return TextRatingVotesOnImages(
-                imageURL: topRated?[index].posterPath ?? '',
-                votes: topRated?[index].voteCount ?? 0,
-                rating: topRated?[index].voteAverage ?? 0,
-                movieName: topRated?[index].title ?? '',
-                positionFillTop1: 140,
-                movieID: topRated?[index].id ?? 0,
-              );
-            },
+    return Selector<HomePageBloc, ScrollController>(
+      selector: (_, bloc) => bloc.getScrollControllerForTopRatedMovie,
+      builder: (_, controller, __) => Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(left: kSP20x),
+            child: Align(
+                alignment: Alignment.topLeft,
+                child: EasyText(
+                  text: kYouMaylikeText,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                )),
           ),
-        ),
-      ],
+          SizedBox(
+            width: kYouMayLikeMovieSizeWidth,
+            height: kYouMayLikeMovieSizeHeight,
+            child: ListView.builder(
+              controller: controller,
+              scrollDirection: Axis.horizontal,
+              itemCount: topRated?.length,
+              itemBuilder: (context, index) {
+                return TextRatingVotesOnImages(
+                  imageURL: topRated?[index].posterPath ?? '',
+                  votes: topRated?[index].voteCount ?? 0,
+                  rating: topRated?[index].voteAverage ?? 0,
+                  movieName: topRated?[index].title ?? '',
+                  positionFillTop1: 140,
+                  movieID: topRated?[index].id ?? 0,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -389,37 +392,41 @@ class PopularMovieViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(left: kSP20x),
-          child: Align(
-              alignment: Alignment.topLeft,
-              child: EasyText(
-                text: kPopularText,
-                color: kWhiteColor,
-                fontWeight: FontWeight.w600,
-              )),
-        ),
-        SizedBox(
-          width: kPopularMovieSizeWidth,
-          height: kPopularMovieSizeHeight,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: popularMovieVO?.length,
-            itemBuilder: (context, index) {
-              return TextRatingVotesOnImages(
-                imageURL: popularMovieVO?[index].posterPath ?? '',
-                positionFillTop1: 100,
-                movieName: popularMovieVO?[index].title ?? '',
-                rating: popularMovieVO?[index].voteAverage ?? 0,
-                votes: popularMovieVO?[index].voteCount ?? 0,
-                movieID: popularMovieVO?[index].id ?? 0,
-              );
-            },
+    return Selector<HomePageBloc, ScrollController>(
+      selector: (_, bloc) => bloc.getScrollControllerForPopularMovie,
+      builder: (_, controller, __) => Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(left: kSP20x),
+            child: Align(
+                alignment: Alignment.topLeft,
+                child: EasyText(
+                  text: kPopularText,
+                  color: kWhiteColor,
+                  fontWeight: FontWeight.w600,
+                )),
           ),
-        ),
-      ],
+          SizedBox(
+            width: kPopularMovieSizeWidth,
+            height: kPopularMovieSizeHeight,
+            child: ListView.builder(
+              controller: controller,
+              scrollDirection: Axis.horizontal,
+              itemCount: popularMovieVO?.length,
+              itemBuilder: (context, index) {
+                return TextRatingVotesOnImages(
+                  imageURL: popularMovieVO?[index].posterPath ?? '',
+                  positionFillTop1: 100,
+                  movieName: popularMovieVO?[index].title ?? '',
+                  rating: popularMovieVO?[index].voteAverage ?? 0,
+                  votes: popularMovieVO?[index].voteCount ?? 0,
+                  movieID: popularMovieVO?[index].id ?? 0,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

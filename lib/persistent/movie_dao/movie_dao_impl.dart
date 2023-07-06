@@ -48,13 +48,6 @@ class MovieDAOImpl extends MovieDAO {
   Stream<List<MovieVO>?> getTopRatedListFromDataBaseStream() =>
       Stream.value(getTopRatedListFromDataBase());
 
-  @override
-  List<MovieVO>? getSimilarMovieListFromDataBase() =>
-      _movieBox().values.toList();
-
-  @override
-  Stream<List<MovieVO>?> getSimilarMovieListFromDataBaseStream() =>
-      Stream.value(getSimilarMovieListFromDataBase());
 
   Box<MovieVO> _movieBox() => Hive.box<MovieVO>(kBoxNameForMovieVO);
 
